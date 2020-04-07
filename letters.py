@@ -1,8 +1,11 @@
 import discord
 from discord.ext import commands
 import random as rand
+import os
+import json
 
 class LettersCmds(commands.Cog):
+    """ Commands made by letters """
 
     @commands.command()  # use commands.command in a cog
     async def whois(self, ctx: commands.Context, who: discord.Member = None):
@@ -35,8 +38,19 @@ class LettersCmds(commands.Cog):
     
     @commands.command()
     async def randmoji(self, ctx):
-        """ Gives a random emoji in this guild. """
-        await ctx.send(rand.choice(ctx.guild.emojis))
+        """ Gives a random emoji that the bot has access to. """
+        await ctx.send(rand.choice(ctx.bot.emojis))
+
+    @commands.command()
+    async def owners(self, ctx):
+        """ Lists off all of the bot owners. """
+        owners = json.loads(os.environ["BOT_OWNERS"])
+        oemb = discord.Embed(
+            title="Bot owners",
+            description="Everyone who contributed to the bot:\n {0}".format(",\n".join(str(ctx.bot.get_user(id)) for id in owners)),
+            color=ctx.guild.me.color
+        )
+        await ctx.send(embed=oemb)
 
     
 

@@ -22,7 +22,7 @@ def generateScream():
     # Chance to put one of these at the end of the message
     suffix = "" if chance(50) else random.choice(["H", "ARGH"])
 
-    text = formatter + body + formatter + suffix
+    text = formatter + body + suffix + formatter
 
     if chance(50):
         text = text.lower()
@@ -32,12 +32,16 @@ def generateScream():
 
 def allEqual(arr):
    return len(set(arr)) == 1
-    
+
+def allUnique(arr):
+    return len(set(arr)) == len(arr)
 
 class GarlicCommands(commands.Cog):
     """ Commands made by garlicOS®! """
 
-    lastFewMessages = [] # idk if this will work well see
+    def __init__(self, bot):
+        self.bot = bot
+
 
     @commands.command()
     async def scream(self, ctx: commands.Context):
@@ -48,26 +52,30 @@ class GarlicCommands(commands.Cog):
     @commands.command()
     async def cat(self, ctx: commands.Context):
         """ Pull a cat from thiscatdoesnotexist.com. """        
-        r = requests.get("https://thiscatdoesnotexist.com/")
-        catFile = BytesIO(r.content)
-        await ctx.send(file=discord.File(catFile, "cat.png"))
+        await ctx.send(f"https://thiscatdoesnotexist.com/?{random.randint(1000000000000000000000000000000, 9999999999999999999999999999999)}")
 
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        # Chance to scream in response to message
-        if chance(5):
-            text = generateScream() if chance(50) else "ooo :joy:"
-            await message.channel.send(text)
-
+        if message.author.bot:
+            return
 
         # Contribute to message chains
-        self.lastFewMessages.append(message)
-        if len(self.lastFewMessages) > 3:
-            self.lastFewMessages.pop(0)
+        message_history = await message.channel.history(limit=3).flatten()
+        if self.bot.user in [m.author for m in message_history]:
+            return
+        
+        message_content = set(m.content for m in message_history)
+        if len(message_content) == 1:
+            await message.channel.send(list(message_content)[0])
 
-        for message in self.lastFewMessages:
-            if 
+
+        # Chance to scream in response to message
+        if chance(5) or "AAA" in message.content:
+            text = generateScream() if chance(50) else "ooo :joy:"
+            await message.channel.send(text)
+        
+
 
 
 

@@ -1,7 +1,9 @@
-# use the chat box its over there >>>
+# Join the Discord server we trapped the bot in! We'd post it on /r/Ooer but we'd get banned.
+# https://discord.gg/pKGBpA
 
 import logging
 import os
+import json
 
 import jishaku
 import discord  # may be not-needed, we'll see
@@ -21,18 +23,20 @@ class OoerBot(commands.AutoShardedBot):
 
     async def on_command_error(self, ctx, exception):
         await ctx.send(f"you are suck; {exception}")
-
     async def on_ready(self):
-        print("ooo bot running")
+        print("why doesn't this code run")  # it's because it's not registered as an event
 
-owners = [240987337209675776, 556614860931072012, 206235904644349953, 342828210209161227, 636797375184240640]  # temp thing 
-bot = OoerBot(command_prefix=os.environ["COMMAND_PREFIX"], owner_ids=owners)
+bot = OoerBot(
+    command_prefix=os.environ["COMMAND_PREFIX"],
+    owner_ids=json.loads(os.environ["BOT_OWNERS"]),
+    case_insensitive=True
+)
 bot.logger = logger
 
 
 @bot.event
 async def on_ready():
-    bot.logger.info("ooo bot online")
+    bot.logger.info("ooo bot online")  # this *should* run
 
 
 @bot.command()

@@ -51,6 +51,9 @@ class DelphiCommands(commands.Cog):
 
     @commands.command()
     async def mindbreak(self, ctx):
+        with open("mind.txt", encoding="utf8") as f:
+             corpus = f.readlines()
+        await ctx.send(" ".join(random.sample(corpus, 50)))
 
 def setup(bot):
     bot.add_cog(DelphiCommands(bot))

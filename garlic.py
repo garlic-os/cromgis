@@ -4,13 +4,25 @@ import random
 import requests
 from io import BytesIO
 
+def generateScream():
+    # Vanilla scream half the time
+    if random.random() < 0.5:
+        return "A" * random.randint(1, 100)
+    
+    body = random.choice(["a", "A", "o", "O"])
+    formatter = "**" if random.random() < 0.5 else random.choice(["", "*", "**", "***"])
+    
+
+    return formatter + (body * random.randint(1, 100)) + formatter
+    
+
 class GarlicCommands(commands.Cog):
     """ Commands made by garlicOS® """
 
     @commands.command()
     async def scream(self, ctx: commands.Context):
         """ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA """
-        await ctx.send("A" * random.randint(1, 100))
+        await ctx.send(generateScream())
 
     @commands.command()
     async def cat(self, ctx: commands.Context):

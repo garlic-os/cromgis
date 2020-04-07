@@ -14,12 +14,15 @@ class LettersCmds(commands.Cog):
 
 
     @commands.command()
-    async def role(self, ctx, role: discord.Role = None):
+    async def role(self, ctx, role: discord.Role):
         """ Returns info about a role. """
-        if not role:
-            await ctx.send('Please pong a role buddy oh friend')
-        else:
-            await ctx.send(str(role.color))
+        embed = discord.Embed(
+            title=role.name,
+            color=role.color
+        )
+        embed.add_field(name='Hex color code', value=f"**{role.color}**")  # inline is true by default
+        embed.add_field(name="Permission bitfield", value=role.permissions.value)
+        await ctx.send(embed=embed)
     
 
 def setup(bot):

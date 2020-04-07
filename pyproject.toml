@@ -1,0 +1,15 @@
+[build-system]
+build-backend = "poetry.masonry.api"
+requires = ["poetry>=0.12"]
+
+[tool]
+[tool.poetry]
+authors = ["Your Name <you@example.com>"]
+description = ""
+name = "ooer-discord-bot"
+version = "0.1.0"
+[tool.poetry.dependencies]
+discord = "^1.0"
+python = "^3.7"
+jishaku = "^1.18"
+[tool.poetry.dev-dependencies]

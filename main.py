@@ -38,7 +38,7 @@ async def on_ready():
 @bot.command()
 async def ping(ctx):
     """Responds with the bot's ping"""
-    await ctx.send(f"Ping! Took {bot.latency * 1000} ms")
+    await ctx.send(f"Ping! Took **{round(bot.latency * 1000, 2)}** ms")
 
 extensions = ['letters', "delphi", "garlic", "jishaku"]  # put this... somewhere, later
 for extension in extensions:

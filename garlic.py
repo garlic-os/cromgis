@@ -1,8 +1,5 @@
-import discord
 from discord.ext import commands
 import random
-import requests
-from io import BytesIO
 
 def chance(percent):
     return random.random() < percent / 100
@@ -39,8 +36,8 @@ def allUnique(arr):
 class GarlicCommands(commands.Cog):
     """ Commands made by garlicOS®! """
 
-    def __init__(self, bot):
-        self.bot = bot
+    # def __init__(self, bot):
+    #     self.bot = bot
 
 
     @commands.command()
@@ -53,6 +50,12 @@ class GarlicCommands(commands.Cog):
     async def cat(self, ctx: commands.Context):
         """ Pull a cat from thiscatdoesnotexist.com. """        
         await ctx.send(f"https://thiscatdoesnotexist.com/?{random.randint(1000000000000000000000000000000, 9999999999999999999999999999999)}")
+
+
+    @commands.command()
+    async def code(self, ctx: commands.Context):
+        """ View and edit cromgis's code! """
+        await ctx.send("cromgis is a bot made by /r/Ooer, where we believe everyone has someone to contribute. Therefore, cromgis is open source! Join the IDE that it's running on and add your own code!\nhttps://repl.it/join/uedbezcr-garlic_os")
 
 
     @commands.Cog.listener()

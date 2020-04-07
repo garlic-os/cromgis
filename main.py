@@ -4,6 +4,7 @@
 import logging
 import os
 import json
+import random
 
 import jishaku
 import discord  # may be not-needed, we'll see
@@ -11,6 +12,14 @@ from discord.ext import commands  # should be all we need, depends
 
 logger = logging.getLogger(__name__) 
 logger.setLevel(logging.INFO)
+pinged = [ # ping messages
+    'death',
+    'why ping',
+    'who pinged me',
+    '<:ping:696920053731295272>',
+    'whomst'
+]
+
 
 class OoerBot(commands.AutoShardedBot):
     # i just realized there's basically no reason to subclass but w/e
@@ -18,7 +27,8 @@ class OoerBot(commands.AutoShardedBot):
     async def on_message(self, message):
         if message.author.bot:  # this will catch webhooks as well iirc
             return
-
+        if self.user.mentioned_in(message):
+            await message.channel.send(random.choice(pinged))
         await self.process_commands(message)
 
     async def on_command_error(self, ctx, exception):

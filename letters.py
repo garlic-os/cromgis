@@ -18,7 +18,7 @@ class LettersCmds(commands.Cog):
 
 
     @commands.command()
-    async def role(self, ctx, role: discord.Role):
+    async def role(self, ctx, *, role: discord.Role):
         """ Returns info about a role. """
         embed = discord.Embed(
             title=role.name,
@@ -27,7 +27,9 @@ class LettersCmds(commands.Cog):
         )
         embed.add_field(name='Hex color code', value=f"**{role.color}**")  # inline is true by default
         embed.add_field(name="Permission bitfield", value=role.permissions.value)
-        members = ", ".join(str(m) for m in role.members) # no long line 
+        members = ", ".join(str(m) for m in role.members) # no long line
+        if len(members) > 200:
+            members = len(role.members)
         embed.add_field(name="Members with this role", value=members)
         await ctx.send(embed=embed)
 

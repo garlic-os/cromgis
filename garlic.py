@@ -36,8 +36,8 @@ def allUnique(arr):
 class GarlicCommands(commands.Cog):
     """ Commands made by garlicOS®! """
 
-    # def __init__(self, bot):
-    #     self.bot = bot
+    def __init__(self, bot):
+        self.bot = bot
 
 
     @commands.command()

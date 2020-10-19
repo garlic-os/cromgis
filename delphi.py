@@ -1,6 +1,3 @@
-#These are for regular extensions
-#do not run this file
-
 if __name__ == "__main__":
     print("no")
     raise
@@ -9,6 +6,8 @@ import discord
 from discord.ext import commands
 import random
 import asyncio
+import insult
+
 
 
 class DelphiCommands(commands.Cog):
@@ -20,6 +19,7 @@ class DelphiCommands(commands.Cog):
     #bless
     @commands.command()
     async def bless(self, ctx, human: discord.Member = None):
+        """Bless a person."""
         if human:
             await ctx.send(
                 f"> {human.mention} has been <:bless:696879351333126245> **blessed** <:bless:696879351333126245>"
@@ -30,6 +30,7 @@ class DelphiCommands(commands.Cog):
     #blap
     @commands.command()
     async def blap(self, ctx, human: discord.Member = None):
+        """BLAP SOMEONE."""
         if human:
             await ctx.send(
                 '> ' + human.mention +
@@ -43,17 +44,17 @@ class DelphiCommands(commands.Cog):
 
     #rng
     @commands.command()
-    async def rng(self, ctx, nu1: int = 5, nu2: int = 20):  # defaults
+    async def rng(self, ctx, nu1: int = 1, nu2: int = 100): # defaults 1 & 100
+        """Simple random number generator."""
         await ctx.send(random.randint(nu1, nu2))
-        await ctx.send(random.randint(
-            1, 100))  # default values 5 and 20 already do this?
     
     #get server icon
     @commands.command()
     async def icon(self, ctx):
+        """Returns the server's icon."""
         iemb = discord.Embed(
             title=f"Guild icon for {ctx.guild.name}",
-            color=15073280
+            color=0xBEF4C3
         )
         iemb.set_image(url=ctx.guild.icon_url)
         await ctx.send(embed=iemb)
@@ -61,23 +62,39 @@ class DelphiCommands(commands.Cog):
     #get your or someone else's avatar
     @commands.command()
     async def avatar(self, ctx, human: discord.Member = None):
+        """Returns a user's avatar."""
         mem = (human or ctx.author)
         aemb = discord.Embed(
             title=f"Avatar for {mem}",
-            color=15073280
+            color=0xBEF4C3
         )
         aemb.set_image(url=mem.avatar_url)
         await ctx.send(embed=aemb)
 
+
+
+
     @commands.command()
     async def mindbreak(self, ctx):
-        """don't"""
+        """Don't."""
+        Exclamation = "!" * random.randint(1, 35)
         with open("mind.txt", encoding="utf8") as f:
             corpus = f.read()
         corpus = corpus.split(" ")
-        await ctx.message.channel.trigger_typing()
-        await asyncio.sleep(random.randint(1, 2))
-        await ctx.send("**" + " ".join(random.sample(corpus, 25)) + "**")
+        await ctx.send("**" + " ".join(random.sample(corpus, 25)) + Exclamation + "**")
+
+    @commands.command()
+    async def insult(self, ctx):
+        """Insults you."""
+        choice1 = random.choice(insult.item1)
+        choice2 = random.choice(insult.item2)
+        choice3 = random.choice(insult.item3)
+
+        if choice1[-1] == "a" and choice2[-1] in "aeiou":
+            choice1 += "n"
+
+        await ctx.send(f"{choice1} {choice2} {choice3}")
+
 
 
 def setup(bot):

@@ -9,8 +9,12 @@ description = ""
 name = "ooer-discord-bot"
 version = "0.1.0"
 [tool.poetry.dependencies]
+Pillow = "^7.1"
+dataset = "^1.3"
 discord = "^1.0"
-python = "^3.7"
 jishaku = "^1.18"
 markovify = "^0.8.0"
+nbfi = "^0.1.2"
+python = "^3.8"
+pyimgur = "^0.6.0"
 [tool.poetry.dev-dependencies]

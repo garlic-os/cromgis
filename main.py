@@ -2,6 +2,9 @@
 # We'd post it on /r/Ooer but we'd get banned.
 # https://discord.gg/pKGBpA
 
+from dotenv import load_dotenv
+load_dotenv()
+
 import logging
 import os
 import json

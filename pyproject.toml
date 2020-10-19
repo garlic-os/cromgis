@@ -17,4 +17,5 @@ markovify = "^0.8.0"
 nbfi = "^0.1.2"
 python = "^3.8"
 pyimgur = "^0.6.0"
+python-dotenv = "^0.14.0"
 [tool.poetry.dev-dependencies]

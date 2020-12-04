@@ -140,3 +140,6 @@ cython_debug/
 # idk what these are but i dont want to commit them
 **/__pycache__/
 **/__pypackages__/
+
+# .sh files
+*/*.sh

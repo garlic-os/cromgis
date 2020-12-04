@@ -83,7 +83,7 @@ class DelphiCommands(commands.Cog):
         corpus = corpus.split(" ")
         await ctx.send("**" + " ".join(random.sample(corpus, 25)) + Exclamation + "**")
 
-    @commands.command()
+    @commands.command(enabled=False)
     async def insult(self, ctx):
         """Insults you."""
         choice1 = random.choice(insult.item1)

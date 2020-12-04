@@ -11,10 +11,14 @@ import json
 import random
 from utils import Crombed
 from discord.ext import commands
+from discord.ext.commands.errors import (
+    CommandError,
+    CommandNotFound,
+)
 
 import badmarkov
 
-logger = logging.getLogger(__name__) 
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
@@ -49,7 +53,10 @@ class OoerBot(commands.AutoShardedBot):
 
         await self.process_commands(message)
 
-    async def on_command_error(self, ctx, exception):
+    async def on_command_error(self, ctx: commands.Context, exception: CommandError) -> None:
+        # Ignore Command Not Found errors
+        if type(exception) is CommandNotFound:
+            return
         embed = Crombed(
             title = random.choice(failure_phrases),
             description = str(exception),

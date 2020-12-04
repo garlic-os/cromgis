@@ -11,6 +11,7 @@ import requests
 import os
 from pyimgur import Imgur
 
+
 imgur = Imgur(os.environ["IMGUR_CLIENT_ID"])
 
 REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
@@ -22,13 +23,12 @@ class GarlicCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     @commands.command(aliases=["aaa"])
     async def scream(self, ctx: commands.Context):
         """ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA """
         await ctx.send(generate_scream())
 
-    
+
     @commands.command(aliases=["eee", "ree"])
     async def screech(self, ctx: commands.Context):
         """ EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE """
@@ -44,7 +44,7 @@ class GarlicCommands(commands.Cog):
             title = "Cat",
             author = ctx.author
         ).set_image(url=url)
-        
+
         await ctx.send(embed=embed)
 
 
@@ -66,7 +66,7 @@ class GarlicCommands(commands.Cog):
     #         author = ctx.author,
     #         file = discord.File(img, filename="image.jpg")
     #     )
-        
+
     #     await ctx.send(embed=embed)
 
 
@@ -79,7 +79,7 @@ class GarlicCommands(commands.Cog):
             title = "Horse",
             author = ctx.author
         ).set_image(url=url)
-        
+
         await ctx.send(embed=embed)
 
 
@@ -92,7 +92,7 @@ class GarlicCommands(commands.Cog):
         )
         await ctx.send(embed=embed)
 
-    
+
     @commands.command(aliases=["ev"])
     async def expectedValue(self, ctx: commands.Context, *, json_data: str):
         """ Calculate the expected value of a probability distribution. """
@@ -126,7 +126,7 @@ class GarlicCommands(commands.Cog):
         )
         await ctx.send(embed=embed)
 
-    
+
     @commands.command(aliases=["bf"])
     async def executeBF(self, ctx: commands.Context, *, data: str):
         """ Execute and print the output of a BF program. """
@@ -139,7 +139,7 @@ class GarlicCommands(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    
+
     @commands.command()
     async def text2bf(self, ctx: commands.Context, *, text: str):
         """ Make a BF program that outputs the given text. """
@@ -152,7 +152,7 @@ class GarlicCommands(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    
+
     @commands.command()
     async def compress(self, ctx: commands.Context, *, data: str):
         """ Compress data with zlib (compression level 9). """
@@ -180,7 +180,7 @@ class GarlicCommands(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    
+
     @commands.command(aliases=["b64e", "64e"])
     async def b64encode(self, ctx: commands.Context, *, data: str):
         """ Encode a string to base64. """
@@ -303,7 +303,7 @@ class GarlicCommands(commands.Cog):
             th = "nd"
         elif counter[-1] == 3:
             th = "rd"
- 
+
         # Send out the user's current counter
         embed = Crombed(
             description = f"You are currently on your {counter}{th} number.",
@@ -346,9 +346,9 @@ class GarlicCommands(commands.Cog):
             text = function()
             return await message.channel.send(text)
 
-        if "AAA" in message.content.upper():
-            """ Scream in response to screams """
-            return await message.channel.send(generate_scream())
+        #if "AAA" in message.content.upper():
+        #    """ Scream in response to screams """
+        #    return await message.channel.send(generate_scream())
         
         if "EEE" in message.content.upper():
             """ Screech in response to screeches """

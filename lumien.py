@@ -11,7 +11,7 @@ class LumienCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['inspirobot', 'inspiro'])
+    @commands.command(aliases=['inspirobot', 'inspiro', 'inspiration'])
     async def inspire(self, ctx):
         """ Pulls a motivational image from inspirobot.me. """
         await ctx.channel.trigger_typing()

@@ -80,7 +80,7 @@ class LettersCmds(commands.Cog):
             f"Rolled *{num}* d*{sides}* dice... result: **{sum} & {extra} = {sum + extra}**"
         )
 
-    @commands.command()
+    @commands.command(aliases=["static", "noise"])
     async def whitenoise(self, ctx, length: int = 5,
                          samplingrate: int = 10000):
         """ Generates white noise from cryptographically secure random numbers. Very loud, so turn your audio down. Possibly a memetic hazard. Can be up to 100 seconds long with (lensec) argument. Set sampling rate between 4500 and 15000Hz with (samplingrate) arg."""

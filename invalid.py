@@ -144,7 +144,16 @@ class InvalidCommands(commands.Cog):
   @commands.command(aliases=["asherifyme", "asherme"])
   async def asherizeme(self, ctx: commands.Context):
       """Asherizes/de-asherizes you, making you speak in asherisms."""
-      asherizeUser(str(ctx.message.author.id))
+      if str(ctx.message.author.id) == "286883056793681930":
+        asherizeUser(str(ctx.message.author.id))
+      else:
+        embed = Crombed(
+            title = random.choice(failure_phrases),
+            description = "You are already Asher. It is impossible for you to use this. If you did, it would annihilate you.",
+            color_name = "red",
+            author = ctx.author
+        )
+        await ctx.send(embed=embed)
 
   @commands.Cog.listener()
   async def on_message(self, message):

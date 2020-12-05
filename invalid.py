@@ -6,6 +6,7 @@ import re
 import string
 import json
 from utils import Crombed
+from failure import failure_phrases
 # from main import bot
 
 def vending_machine():

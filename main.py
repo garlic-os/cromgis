@@ -10,6 +10,7 @@ import os
 import json
 import random
 from utils import Crombed
+from failure import failure_phrases
 from discord.ext import commands
 from discord.ext.commands.errors import (
     CommandError,
@@ -20,26 +21,6 @@ import badmarkov
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
-
-failure_phrases = [
-    "Wrong.",
-    "You have failed.",
-    "Incorrect.",
-    "no",
-    "You utter fool",
-    "Fool...",
-    "Error!",
-    "ERROR:",
-    "You have erred.",
-    "Imagine writing code that makes this error:",
-    "Do you are have dumb?",
-    "what!",
-    "Bad at computer!",
-    "Bad at computer. Bad at computer!",
-    "oh no"
-]
-
 
 class OoerBot(commands.AutoShardedBot):
     # i just realized there's basically no reason to subclass but w/e

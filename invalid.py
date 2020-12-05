@@ -6,6 +6,7 @@ import re
 import string
 import json
 from utils import Crombed
+from failure import failure_phrases
 # from main import bot
 
 def vending_machine():
@@ -27,7 +28,9 @@ uwuPuncU = ['', '~']
 uwuSounds = ['nya', 'reowr', 'mrowr', 'mreowr', 'meowr', 'meow', 'mrow']
 uwuSniffs = [' cutewy*', ' pwayfuwwy*', ' wuvingwy*', ' cuwiouswy*', '*']
 uwuNuzzles = [' cutewy*', ' pwayfuwwy*', ' wuvingwy*', '*']
-  # yes, that is a private use area character, u+fa606. being used because the likelyhood that anybody's going to use that character on a discord server for any reason are very low, especially when it's enclosed in @ symbols like that
+  # yes, that is a private use area character, u+fa606. being used because the likelyhood that anybody's going to use that character on a discord server for any reason are very low, especially when it's enclosed in @ symbols like that (basically ignore the bug by making it so obscure nobody will find it :cousinbotto:)
+bakaEnds = ['~', '~', ', b-baka!', ', b-b-baka!', ' uwu~']
+bakaFaces = ['(  ⸲⸲◕ ̭ ◕⸴⸴)', '( ⸲⸲◕   ᳕◕⸴⸴)', '( ⸲⸲՛◕ ̭ ◕՝⸴⸴)', '>.<']
 
 uwu_mapping = {
     '(?:r|l)': "w",
@@ -114,6 +117,53 @@ def asherizeUser (user: str):
     f.write(user + "\n")
     f.close
 
+def bakaText (text: str):
+  text2 = re.split(r'\b', text)
+  ret = ""
+  end = random.choice(bakaEnds)
+  
+  for i in text2:
+    if (random.randint(0, 2) == 1) or (len(text2) < 3):
+      ret += re.sub(r'(?P<a>\b[a-zA-Z])', r"\g<a>-" * random.randint(1,2) + r'\g<a>', i)
+    else:
+      ret += i
+  ret = re.sub(r'[.]*\Z', "", ret)
+  ret = re.sub(r'(?P<a>[!?]*)\Z', end + r"\g<a>", ret)
+  
+  if random.randint(0, 2) == 1:
+    ret += " " + random.choice(bakaFaces)
+  
+  return ret
+
+def bakaUser (user: str):
+  f = open("bakaUsers.txt", "r")
+  anime_people = [q.rstrip() for q in f]
+  f.close()
+  if user in anime_people:
+    f = open("bakaUsers.txt", "w")
+    for i in anime_people:
+      if i.strip("\n") != user:
+        f.write(i + "\n")
+    f.truncate()
+    f.close()
+  else:
+    f = open("bakaUsers.txt", "a")
+    f.write(user + "\n")
+    f.close
+
+
+
+async def replaceMessage (message: discord.Message, content: str, nick: str):
+  hooks = await message.channel.webhooks()
+  hook = get(hooks, name="cromHook_imitate") # check if webhook exists
+  if not hook:
+    hook = await message.channel.create_webhook(name="cromHook_imitate") # create webhook
+    # this does not check if the bot has permission to query/create webhooks and will raise an exception otherwise
+
+  await message.delete()
+  pfp = message.author.avatar_url
+  await hook.send(content=content, username=nick, avatar_url=pfp)
+
 
 class InvalidCommands(commands.Cog):
   """Commands made by Invalid."""
@@ -144,7 +194,26 @@ class InvalidCommands(commands.Cog):
   @commands.command(aliases=["asherifyme", "asherme"])
   async def asherizeme(self, ctx: commands.Context):
       """Asherizes/de-asherizes you, making you speak in asherisms."""
-      asherizeUser(str(ctx.message.author.id))
+      if str(ctx.message.author.id) == "286883056793681930":
+        asherizeUser(str(ctx.message.author.id))
+      else:
+        embed = Crombed(
+            title = random.choice(failure_phrases),
+            description = "You are already Asher. It is impossible for you to use this. If you did, it would annihilate you.",
+            color_name = "red",
+            author = ctx.author
+        )
+        await ctx.send(embed=embed)
+
+  @commands.command(aliases=["bakaize, bakaify, bakize, bakify"])
+  async def baka(self, ctx: commands.Context, *, text):
+      """In case you needed an anime girl to say anything."""
+      await ctx.send(bakaText(text))
+
+  @commands.command(aliases=["bakaizeme, bakaifyme, bakizeme, bakifyme"])
+  async def bakame(self, ctx: commands.Context):
+      """Or you want to be the anime girl, for some reason."""
+      bakaUser(str(ctx.message.author.id))
 
   @commands.Cog.listener()
   async def on_message(self, message):
@@ -156,37 +225,29 @@ class InvalidCommands(commands.Cog):
     uwu = [line.rstrip() for line in cFile]
     cFile.close()
 
-    if str(message.author.id) in asher:
-      # get the message content, delete the message, asher, resend with webhook
-      hooks = await message.channel.webhooks()
-      hook = get(hooks, name="asher") # check if asher webhook exists
-      if not hook:
-        hook = await message.channel.create_webhook(name="asher") # create webhook
-        # this does not check if the bot has permission to query/create webhooks and will raise an exception otherwise
-      text = message.content
+    cFile = open("bakaUsers.txt", "r")
+    baka = [line.rstrip() for line in cFile]
+    cFile.close()
 
+    if str(message.author.id) in asher:
+      text = message.content
       words = [word.translate(str.maketrans("", "", string.punctuation)) for word in message.content.split(" ")]
       for word in words:
         asherisms = asherisms_dictionary.get(word, [[word]])[0]  # will look for asherised word, otherwise return list containing base word
         text = text.replace(word, random.choice(asherisms))
 
       ausername = "Asher (not " + message.author.display_name + ')'
-      pfp = message.author.avatar_url
-      
-      await message.delete()
-      await hook.send(content=text, username=ausername, avatar_url=pfp)
+      await replaceMessage(message, text, ausername)
 
     elif str(message.author.id) in uwu:
-      hooks = await message.channel.webhooks()
-      hook = get(hooks, name="uwu") 
-      if not hook:
-        hook = await message.channel.create_webhook(name="uwu") 
       text = uwuizeText(message.content)
       ausername = uwuizeUsername(message.author.display_name)
-      pfp = message.author.avatar_url
-      
-      await message.delete()
-      await hook.send(content=text, username=ausername, avatar_url=pfp)
+      await replaceMessage(message, text, ausername)
+
+    elif str(message.author.id) in baka:
+      text = bakaText(message.content)
+      ausername = message.author.display_name + "-chan"
+      await replaceMessage(message, text, ausername)
 
   # didn't know how to make user mindbreak :(
   

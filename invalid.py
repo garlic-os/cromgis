@@ -194,7 +194,7 @@ class InvalidCommands(commands.Cog):
   @commands.command(aliases=["asherifyme", "asherme"])
   async def asherizeme(self, ctx: commands.Context):
       """Asherizes/de-asherizes you, making you speak in asherisms."""
-      if not ctx..author.id == 286883056793681930:
+      if not ctx.author.id == 286883056793681930:
         asherizeUser(str(ctx.author.id))
       else:
         embed = Crombed(

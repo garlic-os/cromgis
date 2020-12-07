@@ -49,7 +49,7 @@ class OoerBot(commands.AutoShardedBot):
 
 print("Initializing bot...")
 bot = OoerBot(
-    command_prefix = os.environ["COMMAND_PREFIX"],
+    command_prefix = (os.environ["COMMAND_PREFIX"], os.environ["COMMAND_PREFIX"].capitalize()),
     owner_ids = json.loads(os.environ["BOT_OWNERS"]),
     case_insensitive = True
 )

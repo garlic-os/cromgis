@@ -7,7 +7,7 @@ import random
 import json
 import zlib
 import base64
-import requests
+import aiohttp
 import os
 from pyimgur import Imgur
 
@@ -18,7 +18,7 @@ REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
 
 
 class GarlicCommands(commands.Cog):
-    """ Commands made by garlicOS®! """
+    """ Commands made by garlicOSÂ®! """
 
     def __init__(self, bot):
         self.bot = bot
@@ -225,28 +225,34 @@ class GarlicCommands(commands.Cog):
 
         print(f"[garlic.py] Fetching an ooer image based on text \"{processed_text}\"...")
 
-        response = requests.post(
-            "https://api.deepai.org/api/text2img",
-            data = {
-                "text": processed_text,
-            },
-            headers = {
-                "api-key": os.environ["DEEPAI_API_KEY"]
-            }
-        ).json()
+        payload = {
+            "text": processed_text,
+        }
 
-        try:
-            url = response["output_url"]
-        except KeyError:
-            raise Exception(f"Expected key 'output_url': {str(response)}")
+        headers = {
+            "api-key": os.environ["DEEPAI_API_KEY"]
+        }
 
-        embed = Crombed(
-            title = "Image",
-            description = processed_text if raw_text else None, # Only show the text cromgis used if the text came from a user
-            author = ctx.author
-        ).set_image(url=url)
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                "https://api.deepai.org/api/text2img",
+                json=payload,
+                headers=headers
+            ) as response:
+                response = await response.json()
 
-        await ctx.send(embed=embed)
+                try:
+                    url = response["output_url"]
+                except KeyError:
+                    raise Exception(f"Expected key 'output_url': {str(response)}")
+
+                embed = Crombed(
+                    title = "Image",
+                    description = processed_text if raw_text else None,  # Only show the text cromgis used if the text came from a user
+                    author = ctx.author
+                ).set_image(url=url)
+
+                await ctx.send(embed=embed)
 
 
     @commands.command(aliases=["mp4togif"])
@@ -340,11 +346,9 @@ class GarlicCommands(commands.Cog):
             return await message.channel.send(message_content.pop())
 
 
-        if chance(2):
-            """ Chance to say a funny """
-            function = random.choice([generate_scream, generate_screech, ooojoy])
-            text = function()
-            return await message.channel.send(text)
+        if chance(2/3):
+            """ Chance to say ooo 😂 """
+            return await message.channel.send("ooo :joy:")
 
         #if "AAA" in message.content.upper():
         #    """ Scream in response to screams """

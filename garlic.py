@@ -211,6 +211,7 @@ class GarlicCommands(commands.Cog):
 
 
     @commands.command(aliases=["picture", "photo", "photograph"])
+    @commands.cooldown(2, 4, commands.BucketType.user)
     async def image(self, ctx: commands.Context, *, raw_text: str = None):
         """ Generate an image from text using the Text to Image API made by Scott Ellison Reed on deepai.org. """
         if raw_text:
@@ -230,13 +231,13 @@ class GarlicCommands(commands.Cog):
         }
 
         headers = {
-            "api-key": os.environ["DEEPAI_API_KEY"]
+            "api-key": os.environ["DEEPAI_API_KEY"],
         }
 
         async with aiohttp.ClientSession() as session:
             async with session.post(
                 "https://api.deepai.org/api/text2img",
-                json=payload,
+                data=payload,
                 headers=headers
             ) as response:
                 response = await response.json()

@@ -43,11 +43,10 @@ class GarlicCommands(commands.Cog):
         url = f"https://thiscatdoesnotexist.com/?{random_string(32)}"
 
         embed = Crombed(
-            title = "Cat",
-            author = ctx.author
+            title = "Cat"
         ).set_image(url=url)
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
     # This code causes an error on thispersondoesnotexist's end.
@@ -79,11 +78,10 @@ class GarlicCommands(commands.Cog):
         url = f"https://thishorsedoesnotexist.com/?{random_string(32)}"
 
         embed = Crombed(
-            title = "Horse",
-            author = ctx.author
+            title = "Horse"
         ).set_image(url=url)
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
     @commands.command(aliases=["source", "github"])
@@ -93,7 +91,7 @@ class GarlicCommands(commands.Cog):
             title = "Source code",
             description = "cromgis is an open-source bot made by the /r/Ooer hivemind. See its code here:\nhttps://github.com/kaylynn234/Ooer-Discord-Bot"
         )
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
     @commands.command(aliases=["ev"])
@@ -102,7 +100,7 @@ class GarlicCommands(commands.Cog):
         try:
             probabilities = json.loads(json_data)
         except json.decoder.JSONDecodeError:
-            return await ctx.send("Syntax error")
+            return await ctx.reply("Syntax error")
 
         prob_dist = ProbDist(probabilities)
 
@@ -110,7 +108,7 @@ class GarlicCommands(commands.Cog):
             title = "Expected value",
             description = str(prob_dist.expected_value)
         )
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
     @commands.command(aliases=["sd"])
@@ -119,7 +117,7 @@ class GarlicCommands(commands.Cog):
         try:
             probabilities = json.loads(json_data)
         except json.decoder.JSONDecodeError:
-            return await ctx.send("Syntax error")
+            return await ctx.reply("Syntax error")
 
         prob_dist = ProbDist(probabilities)
 
@@ -127,7 +125,7 @@ class GarlicCommands(commands.Cog):
             title = "Standard deviation",
             description = str(prob_dist.standard_deviation)
         )
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
     @commands.command(aliases=["bf"])
@@ -140,7 +138,7 @@ class GarlicCommands(commands.Cog):
             description = program_out
         )
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
     @commands.command()
@@ -153,7 +151,7 @@ class GarlicCommands(commands.Cog):
             description = bf_program
         )
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
     @commands.command()
@@ -167,7 +165,7 @@ class GarlicCommands(commands.Cog):
             description = b64_text
         )
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
     @commands.command()
@@ -181,7 +179,7 @@ class GarlicCommands(commands.Cog):
             description = decompressed
         )
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
     @commands.command(aliases=["b64e", "64e"])
@@ -194,7 +192,7 @@ class GarlicCommands(commands.Cog):
             description = b64_text
         )
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
     @commands.command(aliases=["b64d", "64d"])
@@ -210,7 +208,7 @@ class GarlicCommands(commands.Cog):
             description = decoded_data
         )
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
     @commands.command(aliases=["picture", "photo", "photograph"])
@@ -250,11 +248,10 @@ class GarlicCommands(commands.Cog):
 
                 embed = Crombed(
                     title = "Image",
-                    description = processed_text if raw_text else None,  # Only show the text cromgis used if the text came from a user
-                    author = ctx.author
+                    description = processed_text if raw_text else None  # Only show the text cromgis used if the text came from a user
                 ).set_image(url=url)
 
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
 
 
     # @commands.command(aliases=["mp4togif"])
@@ -279,7 +276,7 @@ class GarlicCommands(commands.Cog):
         length = random.randint(5, 750)
         gibberish_text = generate_gibberish(text, level, length)
 
-        await ctx.send(gibberish_text)
+        await ctx.reply(gibberish_text)
 
 
     @commands.group()
@@ -293,10 +290,9 @@ class GarlicCommands(commands.Cog):
 
         # Send out the generated number
         embed = Crombed(
-            description = "Your next number is: " + user_number,
-            author = ctx.author
+            description = "Your next number is: " + user_number
         )
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
     @number.command(name="current")
@@ -314,10 +310,9 @@ class GarlicCommands(commands.Cog):
 
         # Send out the user's current counter
         embed = Crombed(
-            description = f"You are currently on your {counter}{th} number.",
-            author = ctx.author
+            description = f"You are currently on your {counter}{th} number."
         )
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
     # @commands.command()

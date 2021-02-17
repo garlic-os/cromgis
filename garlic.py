@@ -1,19 +1,20 @@
-from discord.ext import commands
-from utils import Crombed, chance, is_mention, extract_id, random_string
-from garlic_functions import (generate_scream, generate_screech, ProbDist,
-                              string_to_bf, run_bf, generate_gibberish,
-                              humanize_text)
-import usernumber
 import random
 import json
 import zlib
 import base64
-import aiohttp
 import os
-from pyimgur import Imgur
+import aiohttp
+from discord.ext import commands
+import usernumber
+from utils import Crombed, chance, random_string
+from garlic_functions import (generate_scream, generate_screech, ProbDist,
+                              string_to_bf, run_bf, generate_gibberish,
+                              humanize_text)
+
+# from pyimgur import Imgur
 
 
-imgur = Imgur(os.environ["IMGUR_CLIENT_ID"])
+# imgur = Imgur(os.environ["IMGUR_CLIENT_ID"])
 
 REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
 
@@ -49,8 +50,9 @@ class GarlicCommands(commands.Cog):
         await ctx.send(embed=embed)
 
 
-    """ This code causes an error on thispersondoesnotexist's end.
-        If you know what I can do to fix this, please tell me """
+    # This code causes an error on thispersondoesnotexist's end.
+    # If you know what I can do to fix this, please tell me
+
     # @commands.command(aliases=["face", "facereveal", "human"])
     # async def person(self, ctx: commands.Context):
     #     """ Generate a face from thispersondoesnotexist.com. """
@@ -131,7 +133,7 @@ class GarlicCommands(commands.Cog):
     @commands.command(aliases=["bf"])
     async def executeBF(self, ctx: commands.Context, *, data: str):
         """ Execute and print the output of a BF program. """
-        program_out = run_bf
+        program_out = run_bf(data)
 
         embed = Crombed(
             title = "Brainfuck output",
@@ -219,7 +221,7 @@ class GarlicCommands(commands.Cog):
         Scott Ellison Reed on deepai.org.
         """
         if raw_text:
-            processed_text = humanize_text(raw_text)
+            processed_text = humanize_text(ctx.message, raw_text)
         else:
             processed_text = random_string(32)
 
@@ -255,20 +257,20 @@ class GarlicCommands(commands.Cog):
                 await ctx.send(embed=embed)
 
 
-    @commands.command(aliases=["mp4togif"])
-    async def mp4togifv(self, ctx: commands.Context, mp4_url: str):
-        gifv_url = imgur.upload_image(
-            path=mp4_url,
-            title="cromgis video (Uploaded with PyImgur)"
-        ).link
+    # @commands.command(aliases=["mp4togif"])
+    # async def mp4togifv(self, ctx: commands.Context, mp4_url: str):
+    #     gifv_url = imgur.upload_image(
+    #         path=mp4_url,
+    #         title="cromgis video (Uploaded with PyImgur)"
+    #     ).link
 
-        embed = Crombed(
-            title = "GIF converted from MP4",
-            url = gifv_url,
-            author = ctx.author
-        )
+    #     embed = Crombed(
+    #         title = "GIF converted from MP4",
+    #         url = gifv_url,
+    #         author = ctx.author
+    #     )
 
-        await ctx.send(embed=embed)
+    #     await ctx.send(embed=embed)
 
 
     @commands.command(aliases=["gib", "gibber"])
@@ -303,11 +305,11 @@ class GarlicCommands(commands.Cog):
 
         # Number suffix
         th = "th"
-        if counter[-1] == 1:
+        if counter % 10 == 1:
             th = "st"
-        elif counter[-1] == 2:
+        elif counter % 10 == 2:
             th = "nd"
-        elif counter[-1] == 3:
+        elif counter % 10 == 3:
             th = "rd"
 
         # Send out the user's current counter
@@ -331,35 +333,35 @@ class GarlicCommands(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        message_authorIDs = set()
+        message_author_ids = set()
         message_content = set()
-        async for m in message.channel.history(limit=REPLY_CHAIN_LENGTH):
-            """ Contribute to message chains """
-            message_authorIDs.add(m.author.id)
-            message_content.add(m.content)
+        async for message in message.channel.history(limit=REPLY_CHAIN_LENGTH):
+            # Contribute to message chains
+            message_author_ids.add(message.author.id)
+            message_content.add(message.content)
 
-        if self.bot.user.id in message_authorIDs:
-            """ Do not reply to self """
+        if self.bot.user.id in message_author_ids:
+            # Do not reply to self
             return
 
-        if len(message_content) == 1 and len(message_authorIDs) >= REPLY_CHAIN_LENGTH:
+        if len(message_content) == 1 and len(message_author_ids) >= REPLY_CHAIN_LENGTH:
             return await message.channel.send(message_content.pop())
 
 
-        if chance(2/3):
-            """ Chance to say ooo 😂 """
+        if chance(2 / 3):
+            # Chance to say ooo 😂
             return await message.channel.send("ooo :joy:")
 
-        #if "AAA" in message.content.upper():
-        #    """ Scream in response to screams """
-        #    return await message.channel.send(generate_scream())
-        
+        # if "AAA" in message.content.upper():
+        #     """ Scream in response to screams """
+        #     return await message.channel.send(generate_scream())
+
         if "EEE" in message.content.upper():
-            """ Screech in response to screeches """
+            # Screech in response to screeches
             return await message.channel.send(generate_screech())
 
         if "@someone" in message.content:
-            """ @someone: ping random user """
+            # @someone: ping random user
             member = random.choice(message.channel.members)
             return await message.channel.send(f"<@{member.id}>")
 

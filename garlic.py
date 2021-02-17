@@ -1,7 +1,8 @@
 from discord.ext import commands
 from utils import Crombed, chance, is_mention, extract_id, random_string
 from garlic_functions import (generate_scream, generate_screech, ProbDist,
-                              string_to_bf, run_bf, ooojoy, generate_gibberish)
+                              string_to_bf, run_bf, generate_gibberish,
+                              humanize_text)
 import usernumber
 import random
 import json
@@ -213,14 +214,12 @@ class GarlicCommands(commands.Cog):
     @commands.command(aliases=["picture", "photo", "photograph"])
     @commands.cooldown(2, 4, commands.BucketType.user)
     async def image(self, ctx: commands.Context, *, raw_text: str = None):
-        """ Generate an image from text using the Text to Image API made by Scott Ellison Reed on deepai.org. """
+        """
+        Generate an image from text using the Text to Image API made by
+        Scott Ellison Reed on deepai.org.
+        """
         if raw_text:
-            if is_mention(raw_text):
-                # Evaluate mentions to nicknames
-                user_id = extract_id(raw_text)
-                processed_text = self.bot.get_user(user_id).display_name
-            else:
-                processed_text = raw_text
+            processed_text = humanize_text(raw_text)
         else:
             processed_text = random_string(32)
 

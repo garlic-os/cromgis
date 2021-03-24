@@ -11,6 +11,7 @@ import json
 import random
 from utils import Crombed
 from failure import failure_phrases
+import discord
 from discord.ext import commands
 from discord.ext.commands.errors import (
     CommandError,
@@ -51,7 +52,9 @@ print("Initializing bot...")
 bot = OoerBot(
     command_prefix = (os.environ["COMMAND_PREFIX"], os.environ["COMMAND_PREFIX"].capitalize()),
     owner_ids = json.loads(os.environ["BOT_OWNERS"]),
-    case_insensitive = True
+    case_insensitive = True,
+    allowed_mentions=discord.AllowedMentions.none(),
+    activity=discord.Game(name="Forged in steel and fire"),
 )
 
 bot.logger = logger

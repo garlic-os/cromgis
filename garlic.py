@@ -20,7 +20,7 @@ REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
 
 
 class GarlicCommands(commands.Cog):
-    """ Commands made by garlicOSÂ®! """
+    """ Commands made by garlicOS®! """
 
     def __init__(self, bot):
         self.bot = bot

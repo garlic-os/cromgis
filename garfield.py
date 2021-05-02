@@ -2,6 +2,7 @@ from typing import BinaryIO
 
 import os
 from datetime import datetime, timezone
+from dateutil.parser import parse as parse_date
 from io import BytesIO
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -39,10 +40,17 @@ class GarfieldCommand(commands.Cog):
 
 
     @commands.command(aliases=["garf", "dailygarfield"])
-    async def garfield(self, ctx: commands.Context) -> None:
-        """ Download today's daily Garfield comic and post it to Discord. """
-        today = datetime.now(timezone.utc)
-        year_month_day = today.strftime("%Y/%m/%d")
+    async def garfield(self, ctx: commands.Context, date: str=None) -> None:
+        """
+        Download a Garfield comic and post it to Discord.
+        If no date given, download today's comic.
+        """
+        if date is not None:
+            date = parse_date(date)
+        else:
+            date = datetime.now(timezone.utc)
+
+        year_month_day = date.strftime("%Y/%m/%d")
         print(f"Fetching comic url for {year_month_day}...")
         comic_url = await self.get_comic_url_by_date(year_month_day)
 
@@ -53,7 +61,7 @@ class GarfieldCommand(commands.Cog):
         print(f"Posting to {ctx.channel}...")
         await ctx.send(file=discord.File(
             fp=comic,
-            filename=today.strftime("%Y-%m-%d") + ".gif",
+            filename=date.strftime("%Y-%m-%d") + ".gif",
         ))
 
 

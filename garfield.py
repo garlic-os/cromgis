@@ -1,15 +1,17 @@
 from typing import BinaryIO
 
 import os
-from datetime import datetime, timezone
+from datetime import date, timedelta
 from dateutil.parser import parse as parse_date
 from io import BytesIO
 from dotenv import load_dotenv
 from discord.ext import commands
 import aiohttp
 import discord
+import random
 
 GARFIELD_URL = "https://www.gocomics.com/garfield/"
+FIRST_COMIC_DATE = date(year=1978, month=6, day=19)
 
 
 class GarfieldCommand(commands.Cog):
@@ -39,18 +41,31 @@ class GarfieldCommand(commands.Cog):
                 return BytesIO(await response.read())
 
 
+    def random_comic_date(self) -> date:
+        """ Random date between today and the first Garfield comic. """
+        days_range = date.today() - FIRST_COMIC_DATE
+        random_day_since_first = random.randint(0, days_range)
+        print(FIRST_COMIC_DATE)
+        print(days_range)
+        print(random_day_since_first)
+        return FIRST_COMIC_DATE + timedelta(days=random_day_since_first)
+
+
     @commands.command(aliases=["garf", "dailygarfield"])
-    async def garfield(self, ctx: commands.Context, date: str=None) -> None:
+    async def garfield(self, ctx: commands.Context, *, comic_date: str=None) -> None:
         """
         Download a Garfield comic and post it to Discord.
         If no date given, download today's comic.
         """
-        if date is not None:
-            date = parse_date(date)
+        if comic_date is not None:
+            if comic_date in ("today", "now"):
+                comic_date = date.today()
+            else:
+                comic_date = parse_date(date)
         else:
-            date = datetime.now(timezone.utc)
+            comic_date = self.random_comic_date()
 
-        year_month_day = date.strftime("%Y/%m/%d")
+        year_month_day = comic_date.strftime("%Y/%m/%d")
         print(f"Fetching comic url for {year_month_day}...")
         comic_url = await self.get_comic_url_by_date(year_month_day)
 
@@ -61,7 +76,7 @@ class GarfieldCommand(commands.Cog):
         print(f"Posting to {ctx.channel}...")
         await ctx.send(file=discord.File(
             fp=comic,
-            filename=date.strftime("%Y-%m-%d") + ".gif",
+            filename=comic_date.strftime("%Y-%m-%d") + ".gif",
         ))
 
 

@@ -44,32 +44,32 @@ class GarfieldCommand(commands.Cog):
     def random_comic_date(self) -> date:
         """ Random date between today and the first Garfield comic. """
         days_range = date.today() - FIRST_COMIC_DATE
-        random_day_since_first = random.randint(0, days_range)
-        print(FIRST_COMIC_DATE)
-        print(days_range)
-        print(random_day_since_first)
+        random_day_since_first = random.randint(0, days_range.days)
         return FIRST_COMIC_DATE + timedelta(days=random_day_since_first)
 
 
     @commands.command(aliases=["garf", "dailygarfield"])
     async def garfield(self, ctx: commands.Context, *, comic_date: str=None) -> None:
         """
-        Download a Garfield comic and post it to Discord.
-        If no date given, download today's comic.
+        Download a Garfield comic by date and post it to Discord.
+        If no date given, download a random comic.
+        Download today's with "today" or "now".
         """
         if comic_date is not None:
             if comic_date in ("today", "now"):
                 comic_date = date.today()
+            elif comic_date == "random":
+                comic_date = self.random_comic_date()
             else:
                 comic_date = parse_date(date)
         else:
             comic_date = self.random_comic_date()
 
         year_month_day = comic_date.strftime("%Y/%m/%d")
-        print(f"Fetching comic url for {year_month_day}...")
+        print(f"Fetching comic URL for {year_month_day}...")
         comic_url = await self.get_comic_url_by_date(year_month_day)
 
-        print("Got comic url:", comic_url)
+        print("Got comic URL:", comic_url)
         print("Downloading...")
         comic = await self.load_file_from_url(comic_url)
 

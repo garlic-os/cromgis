@@ -55,6 +55,7 @@ class GarfieldCommand(commands.Cog):
         If no date given, download a random comic.
         Download today's with "today" or "now".
         """
+        comic_date = comic_date.lower()
         if comic_date is not None:
             if comic_date in ("today", "now"):
                 comic_date = date.today()

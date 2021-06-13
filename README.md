@@ -1,4 +1,6 @@
+```css
 {ooer is:an('experimental')}[tech]support.forum{founded on:the('philosophy')}[that]everyone.has{something that:they('can')}[contribute].
+```
 
 # Boot up your very own version of cromgis!
 1. [Create a Discord bot account](https://discordpy.readthedocs.io/en/latest/discord.html)

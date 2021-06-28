@@ -3,10 +3,11 @@ import json
 import zlib
 import base64
 import os
-import aiohttp
+from aiohttp import ClientSession
 from discord.ext import commands
 import usernumber
 from utils import Crombed, chance, random_string
+import wombo
 from garlic_functions import (generate_scream, generate_screech, ProbDist,
                               string_to_bf, run_bf, generate_gibberish,
                               humanize_text)
@@ -233,7 +234,7 @@ class GarlicCommands(commands.Cog):
             "api-key": os.environ["DEEPAI_API_KEY"],
         }
 
-        async with aiohttp.ClientSession() as session:
+        async with ClientSession() as session:
             async with session.post(
                 "https://api.deepai.org/api/text2img",
                 data=payload,
@@ -313,6 +314,29 @@ class GarlicCommands(commands.Cog):
             description = f"You are currently on your {counter}{th} number."
         )
         await ctx.reply(embed=embed)
+
+
+    @commands.command()
+    async def wombo(self, ctx: commands.Context, meme_name: str, *, url: str=None):
+        if meme_name in ("help", "memes", "songs"):
+            await ctx.reply("DM'ing you the memes")
+            meme_names = "\n".join(list(wombo.MEMES.keys()))
+            await ctx.author.send("These are the names of the memes you can use\n" + meme_names)
+            return
+
+        # Resolve image URL
+        if url is None and len(ctx.message.attachments) == 0:
+            raise Exception("No image found! You must give an image URL or upload an attachment.")
+        url = url or ctx.message.attachments[0].url
+
+        # Download the image from the URL and feed it through the Wombo API
+        async with ClientSession() as session:
+            async with session.get(url) as response:
+                response.raise_for_status()
+                image = await response.read()
+                video_url = await wombo.make_wombo(image, meme_name, session)
+
+        await ctx.reply(video_url)
 
 
     # @commands.command()

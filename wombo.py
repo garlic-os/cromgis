@@ -1,6 +1,12 @@
+import sys
+
+if sys.version_info >= (3, 8):
+    from typing import TypedDict  # pylint: disable=no-name-in-module
+else:
+    from typing_extensions import TypedDict
+
 from io import FileIO
 from typing import Tuple
-from typing import TypedDict
 
 import asyncio
 from aiohttp import ClientSession

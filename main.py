@@ -42,10 +42,9 @@ class OoerBot(commands.AutoShardedBot):
         embed = Crombed(
             title = random.choice(failure_phrases),
             description = str(exception),
-            color_name = "red",
-            author = ctx.author
+            color_name = "red"
         )
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
 print("Initializing bot...")

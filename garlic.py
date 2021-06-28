@@ -1,3 +1,4 @@
+import discord
 import random
 import json
 import zlib
@@ -5,7 +6,7 @@ import base64
 import os
 from aiohttp import ClientSession
 from discord.ext import commands
-import usernumber
+from tempfile import TemporaryFile
 from utils import Crombed, chance, random_string
 import wombo
 from garlic_functions import (generate_scream, generate_screech, ProbDist,
@@ -280,48 +281,20 @@ class GarlicCommands(commands.Cog):
         await ctx.reply(gibberish_text)
 
 
-    @commands.group()
-    async def number(self, ctx: commands.Context):
-        await self.next_number(ctx)
-
-
-    @number.command(name="next")
-    async def next_number(self, ctx: commands.Context):
-        user_number = usernumber.generate(ctx.author.id)
-
-        # Send out the generated number
-        embed = Crombed(
-            description = "Your next number is: " + user_number
-        )
-        await ctx.reply(embed=embed)
-
-
-    @number.command(name="current")
-    async def current_number(self, ctx: commands.Context):
-        counter = usernumber.get_counter(ctx.author.id)
-
-        # Number suffix
-        th = "th"
-        if counter % 10 == 1:
-            th = "st"
-        elif counter % 10 == 2:
-            th = "nd"
-        elif counter % 10 == 3:
-            th = "rd"
-
-        # Send out the user's current counter
-        embed = Crombed(
-            description = f"You are currently on your {counter}{th} number."
-        )
-        await ctx.reply(embed=embed)
-
-
     @commands.command()
     async def wombo(self, ctx: commands.Context, meme_name: str, *, url: str=None):
+        """ Lipsync a face to a meme song using wombo.ai """
+
+        # Send the help message for certain words
+        # Can't be assed to paginate the memes list right now
         if meme_name in ("help", "memes", "songs"):
-            await ctx.reply("DM'ing you the memes")
-            meme_names = "\n".join(list(wombo.MEMES.keys()))
-            await ctx.author.send("These are the names of the memes you can use\n" + meme_names)
+            meme_names = list(wombo.MEMES.keys())
+            with TemporaryFile() as f_memes:
+                f_memes.writelines(meme_names)
+                await ctx.send(
+                    "These are the names of the memes you can use\n",
+                    file=discord.file(f_memes, filename="wombo-memes.txt")
+                )
             return
 
         # Resolve image URL

@@ -45,6 +45,7 @@ class OoerBot(commands.AutoShardedBot):
             color_name = "red"
         )
         await ctx.reply(embed=embed)
+        print(f"\n{exception}\n")
 
 
 print("Initializing bot...")

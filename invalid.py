@@ -3,11 +3,8 @@ from discord.ext import commands
 from discord.utils import get
 import random
 import re
-import string
 import json
 from utils import Crombed
-from failure import failure_phrases
-# from main import bot
 
 def vending_machine():
     with open("vendingmachine.txt", "r") as vending_machine_file:
@@ -80,42 +77,12 @@ def uwuizeUsername (text: str):
     userRandom.seed(text)
     return text + userRandom.choice(uwuPuncU) + " " + userRandom.choice(uwuFace)
 
-def uwuizeU (user: str):
-  f = open("uwuizedUsers.txt", "r")
-  u = [q.rstrip() for q in f]
-  f.close()
-  if user in u:
-    f = open("uwuizedUsers.txt", "w")
-    for i in u:
-      if i.strip("\n") != user:
-        f.write(i + "\n")
-    f.truncate()
-    f.close()
-  else:
-    f = open("uwuizedUsers.txt", "a")
-    f.write(user + "\n")
-    f.close
 
 with open("asherisms.json", "r") as e:
   asherisms_dictionary = json.load(e)
 
 # asher = bot.get_user(286883056793681930)
 
-def asherizeUser (user: str):
-  f = open("asherizedUsers.txt", "r")
-  ashers = [q.rstrip() for q in f]
-  f.close()
-  if user in ashers:
-    f = open("asherizedUsers.txt", "w")
-    for i in ashers:
-      if i.strip("\n") != user:
-        f.write(i + "\n")
-    f.truncate()
-    f.close()
-  else:
-    f = open("asherizedUsers.txt", "a")
-    f.write(user + "\n")
-    f.close
 
 def bakaText (text: str):
   text2 = re.split(r'\b', text)
@@ -134,23 +101,6 @@ def bakaText (text: str):
     ret += " " + random.choice(bakaFaces)
   
   return ret
-
-def bakaUser (user: str):
-  f = open("bakaUsers.txt", "r")
-  anime_people = [q.rstrip() for q in f]
-  f.close()
-  if user in anime_people:
-    f = open("bakaUsers.txt", "w")
-    for i in anime_people:
-      if i.strip("\n") != user:
-        f.write(i + "\n")
-    f.truncate()
-    f.close()
-  else:
-    f = open("bakaUsers.txt", "a")
-    f.write(user + "\n")
-    f.close
-
 
 
 async def replaceMessage (message: discord.Message, content: str, nick: str):
@@ -186,74 +136,10 @@ class InvalidCommands(commands.Cog):
       """UwUize some text."""
       await ctx.send(uwuizeText(text))
 
-  @commands.command(aliases=["uwume", "owome", "owoizeme", "uwuifyme", "owoifyme"])
-  async def uwuizeme(self, ctx: commands.Context):
-      """UwUizes/de-uwuizes you.""" # this used to be able to target other users but i think that could be abused
-      uwuizeU(str(ctx.message.author.id))
-
-  @commands.command(aliases=["asherifyme", "asherme"])
-  async def asherizeme(self, ctx: commands.Context):
-      """Asherizes/de-asherizes you, making you speak in asherisms."""
-      if not ctx.author.id == 286883056793681930:
-        asherizeUser(str(ctx.author.id))
-      else:
-        embed = Crombed(
-            title = random.choice(failure_phrases),
-            description = "You are already Asher. It is impossible for you to use this. If you did, it would annihilate you.",
-            color_name = "red",
-            author = ctx.author
-        )
-        await ctx.send(embed=embed)
-
   @commands.command(aliases=["bakaize, bakaify, bakize, bakify"])
   async def baka(self, ctx: commands.Context, *, text):
       """In case you needed an anime girl to say anything."""
       await ctx.send(bakaText(text))
-
-  @commands.command(aliases=["bakaizeme, bakaifyme, bakizeme, bakifyme"])
-  async def bakame(self, ctx: commands.Context):
-      """Or you want to be the anime girl, for some reason."""
-      bakaUser(str(ctx.message.author.id))
-
-  @commands.Cog.listener()
-  async def on_message(self, message):
-    cFile = open("asherizedUsers.txt", "r")
-    asher = [line.rstrip() for line in cFile]
-    cFile.close()
-
-    cFile = open("uwuizedUsers.txt", "r")
-    uwu = [line.rstrip() for line in cFile]
-    cFile.close()
-
-    cFile = open("bakaUsers.txt", "r")
-    baka = [line.rstrip() for line in cFile]
-    cFile.close()
-
-    if str(message.author.id) in asher:
-      text = message.content
-      words = [word.translate(str.maketrans("", "", string.punctuation)) for word in message.content.split(" ")]
-      for word in words:
-        asherisms = asherisms_dictionary.get(word, [[word]])[0]  # will look for asherised word, otherwise return list containing base word
-        text = text.replace(word, random.choice(asherisms))
-
-      ausername = "Asher (not " + message.author.display_name + ')'
-      await replaceMessage(message, text, ausername)
-
-    elif str(message.author.id) in uwu:
-      text = uwuizeText(message.content)
-      ausername = uwuizeUsername(message.author.display_name)
-      await replaceMessage(message, text, ausername)
-
-    elif str(message.author.id) in baka:
-      text = bakaText(message.content)
-      ausername = message.author.display_name + "-chan"
-      await replaceMessage(message, text, ausername)
-
-  # didn't know how to make user mindbreak :(
-  
-  
-
-
 
 
 def setup(bot):

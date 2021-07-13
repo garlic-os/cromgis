@@ -78,12 +78,6 @@ def uwuizeUsername (text: str):
     return text + userRandom.choice(uwuPuncU) + " " + userRandom.choice(uwuFace)
 
 
-with open("asherisms.json", "r") as e:
-  asherisms_dictionary = json.load(e)
-
-# asher = bot.get_user(286883056793681930)
-
-
 def bakaText (text: str):
   text2 = re.split(r'\b', text)
   ret = ""
@@ -99,7 +93,6 @@ def bakaText (text: str):
   
   if random.randint(0, 2) == 1:
     ret += " " + random.choice(bakaFaces)
-  
   return ret
 
 

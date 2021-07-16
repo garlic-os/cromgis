@@ -4,6 +4,8 @@ import json
 import zlib
 import base64
 import os
+from io import BytesIO
+from urllib.parse import urlparse
 from aiohttp import ClientSession
 from discord.ext import commands
 from tempfile import TemporaryFile
@@ -230,11 +232,9 @@ class GarlicCommands(commands.Cog):
         payload = {
             "text": processed_text,
         }
-
         headers = {
             "api-key": os.environ["DEEPAI_API_KEY"],
         }
-
         async with ClientSession() as session:
             async with session.post(
                 "https://api.deepai.org/api/text2img",
@@ -243,17 +243,20 @@ class GarlicCommands(commands.Cog):
             ) as response:
                 response = await response.json()
 
-                try:
-                    url = response["output_url"]
-                except KeyError:
-                    raise Exception(f"Expected key 'output_url': {str(response)}")
+            try:
+                url = response["output_url"]
+            except KeyError:
+                raise Exception(f"Expected key 'output_url': {str(response)}")
 
-                embed = Crombed(
-                    title = "Image",
-                    description = processed_text if raw_text else None  # Only show the text cromgis used if the text came from a user
-                ).set_image(url=url)
 
-                await ctx.reply(embed=embed)
+            async with session.get(url, data=payload, headers=headers) as response:
+                image = BytesIO(await response.read())
+
+
+        caption = processed_text if raw_text else None  # Only show the text cromgis used if the text came from a user
+        file_name = "SPOILER_" + os.path.basename(urlparse(url).path)
+
+        await ctx.reply(f"> **Image**\n> {caption}", file=discord.File(image, filename=file_name))
 
 
     # @commands.command(aliases=["mp4togif"])

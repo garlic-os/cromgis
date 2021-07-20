@@ -254,7 +254,10 @@ class GarlicCommands(commands.Cog):
 
 
         caption = processed_text if raw_text else None  # Only show the text cromgis used if the text came from a user
-        file_name = "SPOILER_" + os.path.basename(urlparse(url).path)
+        file_name = os.path.basename(urlparse(url).path)
+
+        if os.environ.get("SPOILERIZE_AI_IMAGES", "").lower() in ("true", "1"):
+            file_name = "SPOILER_" + file_name
 
         await ctx.reply(f"> **Image**\n> {caption}", file=discord.File(image, filename=file_name))
 

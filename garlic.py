@@ -12,7 +12,7 @@ from tempfile import TemporaryFile
 from utils import Crombed, chance, random_string
 import wombo
 from garlic_functions import (generate_scream, generate_screech, ProbDist,
-                              string_to_bf, run_bf, generate_gibberish,
+                              string_to_bf, run_bf,
                               humanize_text)
 
 # from pyimgur import Imgur
@@ -276,15 +276,6 @@ class GarlicCommands(commands.Cog):
     #     )
 
     #     await ctx.send(embed=embed)
-
-
-    @commands.command(aliases=["gib", "gibber"])
-    async def gibberish(self, ctx: commands.Context, *, text: str):
-        level = random.randint(1, 6)
-        length = random.randint(5, 750)
-        gibberish_text = generate_gibberish(text, level, length)
-
-        await ctx.reply(gibberish_text)
 
 
     @commands.command()

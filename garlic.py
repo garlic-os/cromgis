@@ -78,7 +78,7 @@ class GarlicCommands(commands.Cog):
 
     @commands.command()
     async def horse(self, ctx: commands.Context):
-        """ Generate a horse from thishorsedoesnotexist.com/.com. """
+        """ Generate a horse from thishorsedoesnotexist.com. """
         url = f"https://thishorsedoesnotexist.com/?{random_string(32)}"
 
         embed = Crombed(

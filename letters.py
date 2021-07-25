@@ -64,7 +64,7 @@ class LettersCmds(commands.Cog):
             color=ctx.guild.me.color)
         await ctx.send(embed=oemb)
 
-    @commands.command(aliases=['cryptorandom', 'crng'])
+    @commands.command(aliases=['cryptorandom', 'crng', 'cryptographicallysecurerandomnumber'])
     async def securerandom(self, ctx, bytes: int = 2):
         """ Provide a cryptographically secure random number. Maximum is (bytes) x 255. """
         num = int(secrets.token_hex(nbytes=bytes), base=16)

@@ -71,8 +71,11 @@ class LettersCmds(commands.Cog):
         await ctx.send(num)
 
     @commands.command()
+    @commands.cooldown(2, 4, commands.BucketType.user)
     async def roll(self, ctx, num: int = 1, sides: int = 6, extra: int = 0):
         """ Roll (num) dice, each with (sides) sides. You can also specify an advantage or disadvantage with (extra)."""
+        if num > 100000:
+            raise Exception("Too many dice")
         sum = 0
         for n in range(0, num):
             sum = sum + rand.randint(1, sides)

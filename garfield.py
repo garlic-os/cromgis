@@ -21,10 +21,17 @@ class GarfieldCommand(commands.Cog):
                 html = await response.text()
 
         # Traverse the HTML extract the comic URL within a <picture> tag
+        # Yes, <picture>, not <img>
         image_tag_beg = html.find('<picture class="item-comic-image">')
         image_tag_end = html.find("</picture>", image_tag_beg)
         src_beg = html.find('src="', image_tag_beg, image_tag_end)
         src_end = html.find('"', src_beg + 5, image_tag_end)
+
+        if src_beg == -1 or src_end == -1:
+            # Just assume that it's the user's fault if cromgis can't find the
+            # comic
+            raise ValueError("Invalid date")
+
         return html[src_beg + 5 : src_end]
 
 

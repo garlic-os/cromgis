@@ -55,14 +55,6 @@ class GarfieldCommand(commands.Cog):
         return html[src_beg + 5 : src_end]
 
 
-    async def load_file_from_url(self, url: str) -> BytesIO:
-        """ Download a file and load it into memory as a BytesIO object. """
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                response.raise_for_status()
-                return BytesIO(await response.read())
-
-
     def random_comic_date(self) -> datetime:
         """ Random date between today and the first Garfield comic. """
         days_range = datetime.now() - FIRST_COMIC_DATE

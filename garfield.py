@@ -1,8 +1,9 @@
-from datetime import datetime, timezone
-from io import BytesIO
-from discord.ext import commands
+
+import random
+from datetime import datetime, timezone, timedelta
+from dateutil.parser import parse as parse_date
 import aiohttp
-import discord
+from discord.ext import commands
 
 GARFIELD_URL = "https://www.gocomics.com/garfield/"
 GARFIELD_TIMEZONE = timezone(offset=timedelta(hours=-5))

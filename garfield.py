@@ -1,9 +1,5 @@
-from typing import BinaryIO
-
-import os
 from datetime import datetime, timezone
 from io import BytesIO
-from dotenv import load_dotenv
 from discord.ext import commands
 import aiohttp
 import discord

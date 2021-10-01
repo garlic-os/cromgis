@@ -30,6 +30,7 @@ class GarfieldCommand(commands.Cog):
             comic_date = self.random_comic_date()
         return comic_date
 
+
     async def get_comic_url_by_date(self, year_month_day: str) -> str:
         """ Get the URL of a Garfield comic by date, formatted 'yyyy/mm/dd'. """
         url = GARFIELD_URL + year_month_day
@@ -47,7 +48,8 @@ class GarfieldCommand(commands.Cog):
 
         if src_beg == -1 or src_end == -1:
             # Just assume that it's the user's fault if cromgis can't find the
-            # comic
+            # comic (but really this usually happens when gocomics returns a 404
+            # page because of an invalid date)
             raise ValueError("Invalid date")
 
         return html[src_beg + 5 : src_end]

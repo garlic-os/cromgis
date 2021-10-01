@@ -1,8 +1,5 @@
-
+from datetime import datetime, timezone
 from io import BytesIO
-import random
-from datetime import datetime, timedelta, timezone
-from dateutil.parser import parse as parse_date
 from discord.ext import commands
 import aiohttp
 import discord

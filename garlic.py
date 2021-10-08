@@ -345,6 +345,10 @@ class GarlicCommands(commands.Cog):
         #     """ Scream in response to screams """
         #     return await message.channel.send(generate_scream())
 
+        if "eggs benedict" in message.content.lower():
+            # Say "ooo 😂" in response to "eggs benedict", per aquaa's request
+            return await message.channel.send("ooo :joy:")
+
         if "EEE" in message.content.upper():
             # Screech in response to screeches
             return await message.channel.send(generate_screech())

@@ -322,20 +322,19 @@ class GarlicCommands(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        if self.bot.user.id == message.author.id:
+            # Do not respond to self
+            return
+
         message_author_ids = set()
         message_content = set()
-        async for message in message.channel.history(limit=REPLY_CHAIN_LENGTH):
+        async for past_message in message.channel.history(limit=REPLY_CHAIN_LENGTH):
             # Contribute to message chains
-            message_author_ids.add(message.author.id)
-            message_content.add(message.content)
-
-        if self.bot.user.id in message_author_ids:
-            # Do not reply to self
-            return
+            message_author_ids.add(past_message.author.id)
+            message_content.add(past_message.content)
 
         if len(message_content) == 1 and len(message_author_ids) >= REPLY_CHAIN_LENGTH:
             return await message.channel.send(message_content.pop())
-
 
         if chance(2 / 3):
             # Chance to say ooo 😂

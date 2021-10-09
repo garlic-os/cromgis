@@ -10,6 +10,7 @@ from scipy.io import wavfile
 import numpy
 import requests
 from PIL import Image
+from utils import Crombed
 
 async def commonColor(imgfile):
   """ Returns the 'most common color' of PIL image imgfile, downsized to 150x150 for performance. """
@@ -56,13 +57,14 @@ class LettersCmds(commands.Cog):
     @commands.command()
     async def owners(self, ctx):
         """ Lists off all of the bot owners. """
-        owners = json.loads(os.environ["BOT_OWNERS"])
-        oemb = discord.Embed(
+        owners = []
+        for owner_id in json.loads(os.environ["BOT_OWNERS"]):
+            owners.append(str(await ctx.bot.fetch_user(owner_id)))
+
+        await ctx.send(embed=Crombed(
             title="Bot owners",
-            description="Everyone who contributed to the bot:\n {0}".format(
-                ",\n".join(str(ctx.bot.get_user(id)) for id in owners)),
-            color=ctx.guild.me.color)
-        await ctx.send(embed=oemb)
+            description=f"Everyone who contributed to the bot:\n{',\n'.join(owners)}",
+        ))
 
     @commands.command(aliases=['cryptorandom', 'crng', 'cryptographicallysecurerandomnumber'])
     async def securerandom(self, ctx, bytes: int = 2):

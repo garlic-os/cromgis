@@ -72,7 +72,7 @@ class LettersCmds(commands.Cog):
         num = int(secrets.token_hex(nbytes=bytes), base=16)
         await ctx.send(num)
 
-    @commands.command()
+    @commands.command(aliases=["dice", "die"])
     @commands.cooldown(2, 4, commands.BucketType.user)
     async def roll(self, ctx, num: int = 1, sides: int = 6, extra: int = 0):
         """ Roll (num) dice, each with (sides) sides. You can also specify an advantage or disadvantage with (extra)."""

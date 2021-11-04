@@ -60,10 +60,11 @@ class LettersCmds(commands.Cog):
         owners = []
         for owner_id in json.loads(os.environ["BOT_OWNERS"]):
             owners.append(str(await ctx.bot.fetch_user(owner_id)))
+        owners = ",\n".join(owners)
 
         await ctx.send(embed=Crombed(
             title="Bot owners",
-            description=f"Everyone who contributed to the bot:\n{',\n'.join(owners)}",
+            description=f"Everyone who contributed to the bot:\n{owners}",
         ))
 
     @commands.command(aliases=['cryptorandom', 'crng', 'cryptographicallysecurerandomnumber'])

@@ -14,5 +14,7 @@ failure_phrases = [
     "Bad at computer!",
     "Bad at computer. Bad at computer!",
     "oh no",
-    "Ooerror"
+    "Ooerror",
+    "the ooerror is ooer",
+    "error ooer-ror oo-error"
 ]

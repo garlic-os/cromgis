@@ -4,7 +4,7 @@ failure_phrases = [
     "Incorrect.",
     "no",
     "You utter fool",
-    "Fool...",
+    "Fool..,",
     "Error!",
     "ERROR:",
     "You have erred.",
@@ -13,5 +13,8 @@ failure_phrases = [
     "what!",
     "Bad at computer!",
     "Bad at computer. Bad at computer!",
-    "oh no"
+    "oh no",
+    "Ooerror",
+    "the ooerror is ooer",
+    "error ooer-ror oo-error"
 ]

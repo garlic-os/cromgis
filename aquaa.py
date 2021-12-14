@@ -5,9 +5,10 @@ class AquaaCommands(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-    @commands.command(ailises=["ooo"])
-    # Say "ooo 😂" 
-        await message.channel.send("ooo :joy:")
+    @commands.command()
+    async def ooo(self, ctx):
+        # Say "ooo 😂" 
+        await ctx.channel.send("ooo :joy:")
       
 def setup(bot):
     bot.add_cog(AquaaCommands(bot))

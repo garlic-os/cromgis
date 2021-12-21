@@ -8,9 +8,7 @@ from io import BytesIO
 from urllib.parse import urlparse
 from aiohttp import ClientSession
 from discord.ext import commands
-from tempfile import TemporaryFile
 from utils import Crombed, chance, random_string
-import wombo
 from garlic_functions import (generate_scream, generate_screech, ProbDist,
                               string_to_bf, run_bf,
                               humanize_text)
@@ -354,8 +352,8 @@ class GarlicCommands(commands.Cog):
 
         if "@someone" in message.content:
             # @someone: ping random user
-            member = random.choice(message.channel.members)
-            return await message.channel.send(f"<@{member.id}>")
+            random_member = random.choice(message.guild.members)
+            return await message.channel.send(random_member.mention)
 
 
 

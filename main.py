@@ -1,6 +1,6 @@
 # Join the Discord server we trapped the bot in!
 # We'd post it on /r/Ooer but we'd get banned.
-# https://discord.gg/pKGBpA
+# https://discord.gg/GhptsGPd
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -49,12 +49,16 @@ class OoerBot(commands.AutoShardedBot):
 
 
 print("Initializing bot...")
+intents = discord.Intents.default()
+intents.members = True
+
 bot = OoerBot(
     command_prefix = (os.environ["COMMAND_PREFIX"], os.environ["COMMAND_PREFIX"].capitalize()),
     owner_ids = json.loads(os.environ["BOT_OWNERS"]),
     case_insensitive = True,
     allowed_mentions=discord.AllowedMentions.none(),
     activity=discord.Game(name="Forged in steel and fire"),
+    intents=intents,
 )
 
 bot.logger = logger

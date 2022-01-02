@@ -26,9 +26,8 @@ class GarlicCommands(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
     @commands.command(aliases=["aaa"])
-    async def scream(self, ctx: commands.Context):
+    async def scream(self, ctx):
         """ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA """
         await ctx.send(generate_scream())
 
@@ -342,7 +341,7 @@ class GarlicCommands(commands.Cog):
         #     """ Scream in response to screams """
         #     return await message.channel.send(generate_scream())
 
-        if "eggs benedict" in message.content.lower():
+        if "eggs benedict" in message.content.upper():
             # Say "ooo 😂" in response to "eggs benedict", per aquaa's request
             return await message.channel.send("ooo :joy:")
 
@@ -350,11 +349,14 @@ class GarlicCommands(commands.Cog):
             # Screech in response to screeches
             return await message.channel.send(generate_screech())
 
+<<<<<<< Updated upstream
         if "@someone" in message.content:
             # @someone: ping random user
             random_member = random.choice(message.guild.members)
             return await message.channel.send(random_member.mention)
 
+=======
+>>>>>>> Stashed changes
 
 
 

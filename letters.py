@@ -5,12 +5,10 @@ import secrets
 import os
 from io import BytesIO
 import json
-from scipy import io  # this is being read, imports scipy.io which allows to import wavfile
 from scipy.io import wavfile
 import numpy
 import requests
 from PIL import Image
-from utils import Crombed
 
 async def commonColor(imgfile):
   """ Returns the 'most common color' of PIL image imgfile, downsized to 150x150 for performance. """
@@ -57,28 +55,23 @@ class LettersCmds(commands.Cog):
     @commands.command()
     async def owners(self, ctx):
         """ Lists off all of the bot owners. """
-        owners = []
-        for owner_id in json.loads(os.environ["BOT_OWNERS"]):
-            owners.append(str(await ctx.bot.fetch_user(owner_id)))
-        owners = ",\n".join(owners)
-
-        await ctx.send(embed=Crombed(
+        owners = json.loads(os.environ["BOT_OWNERS"])
+        oemb = discord.Embed(
             title="Bot owners",
-            description=f"Everyone who contributed to the bot:\n{owners}",
-        ))
+            description="Everyone who contributed to the bot:\n {0}".format(
+                ",\n".join(str(ctx.bot.get_user(id)) for id in owners)),
+            color=ctx.guild.me.color)
+        await ctx.send(embed=oemb)
 
-    @commands.command(aliases=['cryptorandom', 'crng', 'cryptographicallysecurerandomnumber'])
+    @commands.command(aliases=['cryptorandom', 'crng'])
     async def securerandom(self, ctx, bytes: int = 2):
         """ Provide a cryptographically secure random number. Maximum is (bytes) x 255. """
         num = int(secrets.token_hex(nbytes=bytes), base=16)
         await ctx.send(num)
 
-    @commands.command(aliases=["dice", "die"])
-    @commands.cooldown(2, 4, commands.BucketType.user)
+    @commands.command()
     async def roll(self, ctx, num: int = 1, sides: int = 6, extra: int = 0):
         """ Roll (num) dice, each with (sides) sides. You can also specify an advantage or disadvantage with (extra)."""
-        if num > 100000:
-            raise Exception("Too many dice")
         sum = 0
         for n in range(0, num):
             sum = sum + rand.randint(1, sides)

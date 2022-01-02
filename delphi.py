@@ -5,7 +5,6 @@ if __name__ == "__main__":
 import discord
 from discord.ext import commands
 import random
-import asyncio
 import insult
 
 
@@ -70,8 +69,6 @@ class DelphiCommands(commands.Cog):
         )
         aemb.set_image(url=mem.avatar_url)
         await ctx.send(embed=aemb)
-
-
 
 
     @commands.command()

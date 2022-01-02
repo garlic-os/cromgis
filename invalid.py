@@ -1,9 +1,6 @@
-import discord
 from discord.ext import commands
-from discord.utils import get
 import random
 import re
-import json
 from utils import Crombed
 
 def vending_machine():
@@ -71,12 +68,6 @@ def uwuizeText (text: str):
       text = re.sub("````󺘆@``", "... *pwuwws" + random.choice(uwuNuzzles), text)
     return text
 
-def uwuizeUsername (text: str):
-    for k, v in uwu_mapping.items():
-        text = re.sub(k, v, text)
-    userRandom.seed(text)
-    return text + userRandom.choice(uwuPuncU) + " " + userRandom.choice(uwuFace)
-
 
 def bakaText (text: str):
   text2 = re.split(r'\b', text)
@@ -93,19 +84,8 @@ def bakaText (text: str):
   
   if random.randint(0, 2) == 1:
     ret += " " + random.choice(bakaFaces)
+  
   return ret
-
-
-async def replaceMessage (message: discord.Message, content: str, nick: str):
-  hooks = await message.channel.webhooks()
-  hook = get(hooks, name="cromHook_imitate") # check if webhook exists
-  if not hook:
-    hook = await message.channel.create_webhook(name="cromHook_imitate") # create webhook
-    # this does not check if the bot has permission to query/create webhooks and will raise an exception otherwise
-
-  await message.delete()
-  pfp = message.author.avatar_url
-  await hook.send(content=content, username=nick, avatar_url=pfp)
 
 
 class InvalidCommands(commands.Cog):
@@ -123,11 +103,11 @@ class InvalidCommands(commands.Cog):
       )
       await ctx.send(embed=iemb)
 
-
   @commands.command(aliases=["uwu", "owo", "owoize", "uwuify", "owoify"])
   async def uwuize(self, ctx: commands.Context, *, text):
       """UwUize some text."""
       await ctx.send(uwuizeText(text))
+
 
   @commands.command(aliases=["bakaize, bakaify, bakize, bakify"])
   async def baka(self, ctx: commands.Context, *, text):

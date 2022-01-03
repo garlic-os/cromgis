@@ -23,5 +23,6 @@ item3 = [
   "piece of trash.",
   "cunt.",
   "prick.",
-  "clampongus"
+  "clampongus",
+  "dolt"
 ]

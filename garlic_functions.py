@@ -264,4 +264,12 @@ def generate_gibberish(text: str, level: int=4, length: int=500) -> str:
             # Add the character to the output.
             output += char
 
-    return output
+        return output
+    def humanize_text(message: Message, text: str) -> str:
+        for user in message.mentions:
+            text = text.replace(user.mention, user.display_name)
+        for channel in message.channel_mentions:
+            text = text.replace(channel.mention, channel.name)
+        for role in message.role_mentions:
+            text = text.replace(role.mention, role.name)
+        return text

@@ -349,14 +349,11 @@ class GarlicCommands(commands.Cog):
             # Screech in response to screeches
             return await message.channel.send(generate_screech())
 
-<<<<<<< Updated upstream
         if "@someone" in message.content:
             # @someone: ping random user
             random_member = random.choice(message.guild.members)
             return await message.channel.send(random_member.mention)
 
-=======
->>>>>>> Stashed changes
 
 
 

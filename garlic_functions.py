@@ -18,7 +18,7 @@ def generate_scream() -> str:
     formatter = "" if chance(50) else random.choice(["*", "**", "***"])
 
     # Chance to put one of these at the end of the message
-    suffix = "" if chance(50) else random.choice(["H", "RGH"])
+    suffix = "" if chance(50) else random.choice(["H", "RGH","GH""CGH"])
 
     # Example: "**AAAAAAAAAAAARGH**"
     text = formatter + body + suffix + formatter

@@ -9,8 +9,10 @@ class QwertyCommands(commands.Cog):
     @commands.command()
     async def wheelofping(self, ctx: commands.Context):
         """ Pings a random user. pray that it doesn't ping a mod. """
-        random_member = random.choice(ctx.guild.members)
-        return await ctx.channel.send(random_member.mention)
+        member_choices = [m for m in discord.guild.Guild.members 
+				if (not m.bot)]
+        member = random.choice(member_choices)
+        return await discord.channel.send(member.mention)
     @commands.command()
     async def shlurp(self, ctx, human: discord.Member = None):
       """shlurp"""

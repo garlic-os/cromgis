@@ -1,22 +1,23 @@
 [build-system]
 build-backend = "poetry.masonry.api"
-requires = ["poetry>=0.12"]
+requires = ["poetry>=1.1.5"]
 
 [tool]
 [tool.poetry]
 authors = ["Your Name <you@example.com>"]
 description = ""
-name = "ooer-discord-bot"
+name = "cromgis"
 version = "0.1.0"
 [tool.poetry.dependencies]
-Pillow = "^7.1"
-dataset = "^1.3"
+Pillow = "^8.4.0"
+dataset = "^1.5.2"
 "discord.py" = "^1.6.0"
 jishaku = "^1.18"
 markovify = "^0.8.0"
 nbfi = "^0.1.2"
 pyimgur = "^0.6.0"
-python = "^3.8"
+python = ">=3.8,<3.11"
 python-dotenv = "^0.14.0"
 typing-extensions = "^3.10.0"
+scipy = "^1.7.3"
 [tool.poetry.dev-dependencies]

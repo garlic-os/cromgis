@@ -1,6 +1,9 @@
 import discord
 import random
 from discord.ext import commands
+from discord.utils import get
+ping_role = 930603605344542770
+role = get(guild.roles, id=ping_role)
 class QwertyCommands(commands.Cog):
     """ Commands made by QwertyDazerty! """
 
@@ -8,8 +11,8 @@ class QwertyCommands(commands.Cog):
         self.bot = bot
     @commands.command()
     async def wheelofping(self, ctx: commands.Context):
-        """ Pings a random user. pray that it doesn't ping a mod. """
-        random_member = random.choice(ctx.guild.members)
+        """ Pings a user with the role "ping role." """
+        random_member = random.choice(role.members)
         return await ctx.channel.send(random_member.mention)
     @commands.command()
     async def shlurp(self, ctx, human: discord.Member = None):

@@ -11,7 +11,7 @@ class QwertyCommands(commands.Cog):
         self.bot = bot
     @commands.command()
     async def wheelofping(self, ctx: commands.Context):
-        """ Pings a user with the role "ping role." """
+        """ Pings a random user with the role "ping role." """
         random_member = random.choice(role.members)
         return await ctx.channel.send(random_member.mention)
     @commands.command()

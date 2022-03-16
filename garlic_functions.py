@@ -1,3 +1,4 @@
+from discord import Message
 from utils import chance
 import random
 import nbfi

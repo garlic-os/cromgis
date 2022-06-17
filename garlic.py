@@ -4,10 +4,10 @@ import json
 import zlib
 import base64
 import os
-from io import BytesIO
 from urllib.parse import urlparse
-from aiohttp import ClientSession
 from discord.ext import commands
+from aiohttp import ClientSession
+from io import BytesIO
 from utils import Crombed, chance, random_string
 from garlic_functions import (generate_scream, generate_screech, ProbDist,
                               string_to_bf, run_bf,
@@ -90,7 +90,7 @@ class GarlicCommands(commands.Cog):
         """ Look at cromgis's code! """
         embed = Crombed(
             title = "Source code",
-            description = "cromgis is an open-source bot made by the /r/Ooer hivemind. See its code here:\nhttps://github.com/kaylynn234/Ooer-Discord-Bot"
+            description = "cromgis is an open-source bot made by the /r/Ooer hivemind. See its code here:\nhttps://github.com/the-garlic-os/cromgis"
         )
         await ctx.reply(embed=embed)
 
@@ -257,6 +257,51 @@ class GarlicCommands(commands.Cog):
             file_name = "SPOILER_" + file_name
 
         await ctx.reply(f"> **Image**\n> {caption}", file=discord.File(image, filename=file_name))
+
+
+    @commands.command()
+    @commands.cooldown(2, 4, commands.BucketType.user)
+    async def dalle(self, ctx: commands.Context, *, raw_text: str = None):
+        """
+        Generate an image from a Dall⋅E Mini instance.
+        Spin one up as shown here: https://colab.research.google.com/github/saharmor/dalle-playground/blob/main/backend/dalle_playground_backend.ipynb
+        then, I dunno, use jsk or something, to set bot.dalle_url to the loca.lt
+        URL it gives you.
+        """
+        if raw_text:
+            processed_text = humanize_text(ctx.message, raw_text)
+        else:
+            processed_text = random_string(32)
+
+        print(f"[garlic.py] Fetching an ooer dalle based on text \"{processed_text}\"...")
+
+        payload = {
+            "text": processed_text,
+            "num_images": 1,
+        }
+        async with ClientSession() as session:
+            async with session.post(f"{self.bot.dalle_url}/dalle", json=payload) as response:
+                # Get response[0] without JSON parsing by just removing the
+                # surrounding brackets and quotes
+                data_uri = (await response.text())[2:-2]
+
+        # Parse response:
+        # response comes as a PNG data URI;
+        # we need it as a file-like object.
+        image = BytesIO(base64.b64decode(data_uri))
+
+        # Only show the text cromgis used if the text came from a user
+        caption = processed_text if raw_text else None
+
+        if os.environ.get("SPOILERIZE_AI_IMAGES", "").lower() in ("true", "1"):
+            file_name = "SPOILER_dalle.jpg"
+        else:
+            file_name = "dalle.jpg"
+
+        await ctx.reply(
+            f"> **Dall⋅E Image**\n> {caption}",
+            file=discord.File(image, filename=file_name)
+        )
 
 
     # @commands.command(aliases=["mp4togif"])

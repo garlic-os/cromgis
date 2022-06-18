@@ -30,7 +30,7 @@ class GarlicCommands(commands.Cog):
             title="Dall⋅E Mini instance expired",\
             description="cromgis needs a Dall⋅E link.\n"
             "[Follow the instructions on this webpage](https://colab.research.google.com/drive/1uGpVB4GngBdONlHebVJ5maVFZDV-gtIe)"
-            "to get a new one, then do `ooer relink <new_link>` to restore `ooer dalle`.",
+            " to get a new one, then do `ooer relink <new_link>` to restore `ooer dalle`.",
         )
 
 

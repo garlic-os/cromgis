@@ -24,6 +24,13 @@ REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
 class GarlicCommands(commands.Cog):
     """ Commands made by garlicOS®! """
 
+    self.dalle_failure_embed = Crombed(
+        title="Dall⋅E Mini instance expired",\
+        description="cromgis needs a Dall⋅E link.\n"
+        "[Follow the instructions on this webpage](https://colab.research.google.com/drive/1uGpVB4GngBdONlHebVJ5maVFZDV-gtIe)"
+        "to get a new one, then do `ooer relink <new_link>` to restore `ooer dalle`.",
+    )
+
     def __init__(self, bot):
         self.bot = bot
     @commands.command(aliases=["aaa"])
@@ -268,6 +275,9 @@ class GarlicCommands(commands.Cog):
         then, I dunno, use jsk or something, to set bot.dalle_url to the loca.lt
         URL it gives you.
         """
+        if self.bot.dalle_url is None:
+            return await ctx.reply(dalle_failure_embed)
+
         if raw_text:
             processed_text = humanize_text(ctx.message, raw_text)
         else:
@@ -286,12 +296,7 @@ class GarlicCommands(commands.Cog):
                 data_uri = (await response.text())[2:-2]
 
         if len(data_uri) < 500:
-            return await ctx.reply(Crombed(
-                title="Dall⋅E Mini instance expired",\
-                description="cromgis needs a Dall⋅E link.\n"
-                "[Follow the instructions on this webpage](https://colab.research.google.com/drive/1uGpVB4GngBdONlHebVJ5maVFZDV-gtIe)"
-                "to get a new one, then do `ooer relink <new_link>` to restore `ooer dalle`.",
-            ))
+            return await ctx.reply(dalle_failure_embed)
 
         # Parse response:
         # response comes as a PNG data URI;

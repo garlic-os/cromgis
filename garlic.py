@@ -322,7 +322,7 @@ class GarlicCommands(commands.Cog):
         Set a new Dall⋅E Mini instance URL.
         """
         self.bot.dalle_url = url
-        await ctx.reply("Dall⋅E Mini instance URL set")
+        await ctx.reply("Dall⋅E Mini instance URL set. `ooer dalle` is available once more")
 
 
     # @commands.command(aliases=["mp4togif"])

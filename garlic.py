@@ -24,15 +24,16 @@ REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
 class GarlicCommands(commands.Cog):
     """ Commands made by garlicOS®! """
 
-    self.dalle_failure_embed = Crombed(
+    def __init__(self, bot):
+        self.bot = bot
+        self.dalle_failure_embed = Crombed(
         title="Dall⋅E Mini instance expired",\
         description="cromgis needs a Dall⋅E link.\n"
         "[Follow the instructions on this webpage](https://colab.research.google.com/drive/1uGpVB4GngBdONlHebVJ5maVFZDV-gtIe)"
         "to get a new one, then do `ooer relink <new_link>` to restore `ooer dalle`.",
     )
 
-    def __init__(self, bot):
-        self.bot = bot
+
     @commands.command(aliases=["aaa"])
     async def scream(self, ctx):
         """ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA """
@@ -271,9 +272,6 @@ class GarlicCommands(commands.Cog):
     async def dalle(self, ctx: commands.Context, *, raw_text: str = None):
         """
         Generate an image from a Dall⋅E Mini instance.
-        Spin one up as shown here: https://colab.research.google.com/github/saharmor/dalle-playground/blob/main/backend/dalle_playground_backend.ipynb
-        then, I dunno, use jsk or something, to set bot.dalle_url to the loca.lt
-        URL it gives you.
         """
         if self.bot.dalle_url is None:
             return await ctx.reply(dalle_failure_embed)

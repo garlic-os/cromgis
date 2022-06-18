@@ -273,7 +273,7 @@ class GarlicCommands(commands.Cog):
         """
         Generate an image from a Dall⋅E Mini instance.
         """
-        if self.bot.dalle_url is None:
+        if not hasattr(self.bot, "dalle_url") or self.bot.dalle_url is None:
             return await ctx.reply(dalle_failure_embed)
 
         if raw_text:

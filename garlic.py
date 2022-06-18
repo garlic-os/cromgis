@@ -285,6 +285,14 @@ class GarlicCommands(commands.Cog):
                 # surrounding brackets and quotes
                 data_uri = (await response.text())[2:-2]
 
+        if len(data_uri) < 500:
+            return await ctx.reply(Crombed(
+                title="Dall⋅E Mini instance expired",\
+                description="cromgis needs a Dall⋅E link.\n"
+                "[Follow the instructions on this webpage](https://colab.research.google.com/drive/1uGpVB4GngBdONlHebVJ5maVFZDV-gtIe)"
+                "to get a new one, then do `ooer relink <new_link>` to restore `ooer dalle`.",
+            ))
+
         # Parse response:
         # response comes as a PNG data URI;
         # we need it as a file-like object.
@@ -302,6 +310,16 @@ class GarlicCommands(commands.Cog):
             f"> **Dall⋅E Image**\n> {caption}",
             file=discord.File(image, filename=file_name)
         )
+
+
+    @commands.command()
+    @commands.cooldown(2, 4, commands.BucketType.user)
+    async def relink(self, ctx: commands.Context, url: str):
+        """
+        Set a new Dall⋅E Mini instance URL.
+        """
+        self.bot.dalle_url = url
+        await ctx.reply("Dall⋅E Mini instance URL set")
 
 
     # @commands.command(aliases=["mp4togif"])

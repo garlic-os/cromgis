@@ -294,7 +294,7 @@ class GarlicCommands(commands.Cog):
                 data_uri = (await response.text())[2:-2]
 
         if len(data_uri) < 500:
-            return await ctx.reply(embed=dalle_failure_embed)
+            return await ctx.reply(embed=self.dalle_failure_embed)
 
         # Parse response:
         # response comes as a PNG data URI;

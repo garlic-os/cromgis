@@ -26,11 +26,11 @@ class GarlicCommands(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.dalle_failure_embed = Crombed(
-            title="Dall⋅E Mini instance expired",\
-            description="cromgis needs a Dall⋅E link.\n"
+        self.craiyon_failure_embed = Crombed(
+            title="Craiyon instance expired",\
+            description="cromgis needs a new Craiyon link.\n"
             "[Follow the instructions on this webpage](https://colab.research.google.com/drive/1uGpVB4GngBdONlHebVJ5maVFZDV-gtIe)"
-            " to get a new one, then do `ooer relink <new_link>` to restore `ooer dalle`.",
+            " to get one, then do `ooer relink <new_link>` to restore `ooer craiyon`.",
         )
 
 
@@ -267,34 +267,35 @@ class GarlicCommands(commands.Cog):
         await ctx.reply(f"> **Image**\n> {caption}", file=discord.File(image, filename=file_name))
 
 
-    @commands.command()
+    @commands.command(aliases=["dalle", "crayon"])
     @commands.cooldown(2, 4, commands.BucketType.user)
-    async def dalle(self, ctx: commands.Context, *, raw_text: str = None):
+    async def craiyon(self, ctx: commands.Context, *, raw_text: str = None):
         """
-        Generate an image from a Dall⋅E Mini instance.
+        Generate an image from a self-hosted Craiyon instance. (Formerly known
+        as Dall⋅E Mini)
         """
-        if not hasattr(self.bot, "dalle_url") or self.bot.dalle_url is None:
-            return await ctx.reply(embed=self.dalle_failure_embed)
+        if not hasattr(self.bot, "craiyon_url") or self.bot.craiyon_url is None:
+            return await ctx.reply(embed=self.craiyon_failure_embed)
 
         if raw_text:
             processed_text = humanize_text(ctx.message, raw_text)
         else:
             processed_text = random_string(32)
 
-        print(f"[garlic.py] Fetching an ooer dalle based on text \"{processed_text}\"...")
+        print(f"[garlic.py] Fetching an ooer craiyon based on text \"{processed_text}\"...")
 
         payload = {
             "text": processed_text,
             "num_images": 1,
         }
         async with ClientSession() as session:
-            async with session.post(f"{self.bot.dalle_url}/dalle", json=payload) as response:
+            async with session.post(f"{self.bot.craiyon_url}/dalle", json=payload) as response:
                 # Get response[0] without JSON parsing by just removing the
                 # surrounding brackets and quotes
                 data_uri = (await response.text())[2:-2]
 
         if len(data_uri) < 500:
-            return await ctx.reply(embed=self.dalle_failure_embed)
+            return await ctx.reply(embed=self.craiyon_failure_embed)
 
         # Parse response:
         # response comes as a PNG data URI;
@@ -305,12 +306,12 @@ class GarlicCommands(commands.Cog):
         caption = processed_text if raw_text else None
 
         if os.environ.get("SPOILERIZE_AI_IMAGES", "").lower() in ("true", "1"):
-            file_name = "SPOILER_dalle.jpg"
+            file_name = "SPOILER_craiyon.jpg"
         else:
-            file_name = "dalle.jpg"
+            file_name = "craiyon.jpg"
 
         await ctx.reply(
-            f"> **Dall⋅E Image**\n> {caption}",
+            f"> **Craiyon Image**\n> {caption}",
             file=discord.File(image, filename=file_name)
         )
 
@@ -319,10 +320,10 @@ class GarlicCommands(commands.Cog):
     @commands.cooldown(2, 4, commands.BucketType.user)
     async def relink(self, ctx: commands.Context, url: str):
         """
-        Set a new Dall⋅E Mini instance URL.
+        Set a new Craiyon instance URL.
         """
-        self.bot.dalle_url = url
-        await ctx.reply("Dall⋅E Mini instance URL set. `ooer dalle` is available once more")
+        self.bot.craiyon_url = url
+        await ctx.reply("Craiyon instance URL set. `ooer craiyon` is available once more")
 
 
     # @commands.command(aliases=["mp4togif"])

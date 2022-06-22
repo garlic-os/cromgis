@@ -287,11 +287,8 @@ class GarlicCommands(commands.Cog):
             "text": processed_text,
             "num_images": 1,
         }
-        async with ClientSession() as session:
-            async with session.post(f"{self.bot.craiyon_url}/dalle", json=payload) as response:
-                # Get response[0] without JSON parsing by just removing the
-                # surrounding brackets and quotes
-                data_uri = (await response.text())[2:-2]
+        async with self.bot.http_session.post(f"{self.bot.craiyon_url}/dalle", json=payload) as response:
+            data_uri = json.loads(await response.text())["generatedImgs"][0]
 
         if len(data_uri) < 500:
             return await ctx.reply(embed=self.craiyon_failure_embed)

@@ -325,33 +325,6 @@ class GarlicCommands(commands.Cog):
         await ctx.reply("Craiyon instance URL set. `ooer craiyon` is available once more")
 
 
-    # @commands.command(aliases=["mp4togif"])
-    # async def mp4togifv(self, ctx: commands.Context, mp4_url: str):
-    #     gifv_url = imgur.upload_image(
-    #         path=mp4_url,
-    #         title="cromgis video (Uploaded with PyImgur)"
-    #     ).link
-
-    #     embed = Crombed(
-    #         title = "GIF converted from MP4",
-    #         url = gifv_url,
-    #         author = ctx.author
-    #     )
-
-    #     await ctx.send(embed=embed)
-
-
-    # @commands.command()
-    # async def garlicTest(self, ctx: commands.Context, *, text: str):
-    #     embed = Crombed(
-    #         title = "Test embed",
-    #         description = text,
-    #         author = ctx.author
-    #     )
-
-    #     await ctx.send(embed=embed)
-
-
     @commands.Cog.listener()
     async def on_message(self, message):
         if self.bot.user.id == message.author.id:

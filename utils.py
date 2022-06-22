@@ -25,7 +25,7 @@ class Crombed(discord.Embed):
     def set_color_by_name(self):
         """ Set the embed's color by color_name if color is not defined. """
         """ If neither are defined, default to flesh color. """
-        if self.color: # Let color override color_name
+        if self.color:  # Let color override color_name
             return
 
         colors = {

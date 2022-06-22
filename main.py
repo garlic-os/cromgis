@@ -70,16 +70,19 @@ bot = OoerBot(
 bot.logger = logger
 bot.markov = badmarkov.AwfulMarkov("markov_ooer", state_size=2)
 
+
 @bot.event
 async def on_ready():
     print("ooo online")
+
 
 @bot.command()
 async def ping(ctx):
     """ Respond with the bot's reponse time. """
     await ctx.send(f"Ping! Took **{round(bot.latency * 1000, 2)}** ms")
 
-extensions = ["jishaku", 'letters', "delphi", "garlic", "asher", "lumien", "invalid", "garfield","qwerty","aquaa"]  # put this... somewhere, later
+extensions = ["jishaku", 'letters', "delphi", "garlic", "asher", "lumien",
+              "invalid", "garfield", "qwerty", "aquaa"]  # put this... somewhere, later
 for extension in extensions:
     try:
         print(f"Loading extension {extension}...")

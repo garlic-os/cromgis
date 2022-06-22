@@ -5,11 +5,12 @@ import nbfi
 import base64
 import zlib
 
+
 def generate_scream() -> str:
     # Vanilla scream half the time
     if chance(50):
         return "A" * random.randint(1, 100)
-    
+
     # One of these choices repeated 1-100 times
     body = random.choice(["A", "O"]) * random.randint(1, 100)
 
@@ -32,7 +33,7 @@ def generate_screech() -> str:
     # Vanilla screech half the time
     if chance(50):
         return "E" * random.randint(1, 100)
-    
+
     # One of these choices repeated 1-100 times
     body = "E" * random.randint(1, 100)
 
@@ -70,7 +71,7 @@ class ProbDist:
 
         for key in self.probs:
             ev += key * self.probs[key]
-    
+
         return ev
 
 
@@ -81,8 +82,8 @@ class ProbDist:
 
         for key in self.probs:
             sd += (key - self.expected_value) ** 2 * self.probs[key]
-    
-        return sd ** (1/2)
+
+        return sd ** (1 / 2)
 
 
 # Patch for nbfi that prevents it from printing values to console
@@ -109,7 +110,7 @@ def __execute(code: list, stackSize: int) -> list:
             if stack[sptr] == -1:
                 stack[sptr] = 255
         elif instruction == ".":
-            output += chr(stack[sptr]) # MODIFIED HERE: No more printnig for you!
+            output += chr(stack[sptr])  # MODIFIED HERE: No more printing for you!
         elif instruction == ",":
             stack[sptr] = nbfi.__getchar()
         elif instruction == "[" and stack[sptr] == 0:
@@ -120,6 +121,7 @@ def __execute(code: list, stackSize: int) -> list:
 
     nbfi.__getchar.stdin_buffer = []
     return output
+
 
 nbfi.__execute = __execute
 
@@ -174,6 +176,7 @@ def decompress_if_necessary(data: str) -> str:
 
     return data
 
+
 def run_bf(data: str, stack_size: int) -> list:
     return nbfi.run(decompress_if_necessary(data))
 
@@ -205,7 +208,7 @@ def _pick_match_index(text: str, target: str) -> int:
 
 def _pick_char(text: str, target: str, match_index: int, level: int) -> str:
     N_CHARS = len(text)
-    
+
     # Find the character following the matching characters.
     n_matches = 0
     j = -1

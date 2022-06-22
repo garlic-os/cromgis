@@ -268,7 +268,7 @@ class GarlicCommands(commands.Cog):
 
     @commands.command(aliases=["dalle", "crayon"])
     @commands.cooldown(2, 4, commands.BucketType.user)
-    async def craiyon(self, ctx: commands.Context, *, raw_text: str = None):
+    async def craiyon(self, ctx: commands.Context, *, text: str = None):
         """
         Generate an image from a self-hosted Craiyon instance. (Formerly known
         as Dall⋅E Mini)
@@ -276,15 +276,15 @@ class GarlicCommands(commands.Cog):
         if not hasattr(self.bot, "craiyon_url") or self.bot.craiyon_url is None:
             return await ctx.reply(embed=self.craiyon_failure_embed)
 
-        if raw_text:
-            processed_text = humanize_text(ctx.message, raw_text)
+        if text is not None:
+            prompt = humanize_text(ctx.message, text)
         else:
-            processed_text = random_string(32)
+            prompt = random_string(32)
 
-        print(f"[garlic.py] Fetching an ooer craiyon based on text \"{processed_text}\"...")
+        print(f"[garlic.py] Fetching an ooer craiyon based on prompt \"{prompt}\"...")
 
         payload = {
-            "text": processed_text,
+            "text": prompt,
             "num_images": 1,
         }
         async with self.bot.http_session.post(f"{self.bot.craiyon_url}/dalle", json=payload) as response:
@@ -294,12 +294,9 @@ class GarlicCommands(commands.Cog):
             return await ctx.reply(embed=self.craiyon_failure_embed)
 
         # Parse response:
-        # response comes as a PNG data URI;
+        # response comes as a JPG data URI;
         # we need it as a file-like object.
         image = BytesIO(base64.b64decode(data_uri))
-
-        # Only show the text cromgis used if the text came from a user
-        caption = processed_text if raw_text else None
 
         if os.environ.get("SPOILERIZE_AI_IMAGES", "").lower() in ("true", "1"):
             file_name = "SPOILER_craiyon.jpg"
@@ -307,7 +304,7 @@ class GarlicCommands(commands.Cog):
             file_name = "craiyon.jpg"
 
         await ctx.reply(
-            f"> **Craiyon Image**\n> {caption}",
+            f"> **Craiyon Image**\n> {text}",
             file=discord.File(image, filename=file_name)
         )
 
@@ -315,9 +312,7 @@ class GarlicCommands(commands.Cog):
     @commands.command()
     @commands.cooldown(2, 4, commands.BucketType.user)
     async def relink(self, ctx: commands.Context, url: str):
-        """
-        Set a new Craiyon instance URL.
-        """
+        """ Set a new Craiyon instance URL. """
         self.bot.craiyon_url = url
         await ctx.reply("Craiyon instance URL set. `ooer craiyon` is available once more")
 

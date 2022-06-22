@@ -9,6 +9,7 @@ import logging
 import os
 import json
 import random
+from aiohttp import ClientSession
 from utils import Crombed
 from failure import failure_phrases
 import discord
@@ -23,8 +24,13 @@ import badmarkov
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+
 class OoerBot(commands.AutoShardedBot):
-    # i just realized there's basically no reason to subclass but w/e
+    def __init__(self):
+        self.http_session = ClientSession()
+
+    def __del__(self):
+        self.http_session.close()
 
     async def on_message(self, message):
         if message.author.bot:  # this will catch webhooks as well iirc

@@ -240,22 +240,21 @@ class GarlicCommands(commands.Cog):
         headers = {
             "api-key": os.environ["DEEPAI_API_KEY"],
         }
-        async with ClientSession() as session:
-            async with session.post(
-                "https://api.deepai.org/api/text2img",
-                data=payload,
-                headers=headers
-            ) as response:
-                response = await response.json()
+        async with self.bot.http_session.post(
+            "https://api.deepai.org/api/text2img",
+            data=payload,
+            headers=headers
+        ) as response:
+            response = await response.json()
 
-            try:
-                url = response["output_url"]
-            except KeyError:
-                raise Exception(f"Expected key 'output_url': {str(response)}")
+        try:
+            url = response["output_url"]
+        except KeyError:
+            raise Exception(f"Expected key 'output_url': {str(response)}")
 
 
-            async with session.get(url, data=payload, headers=headers) as response:
-                image = BytesIO(await response.read())
+        async with self.bot.http_session.get(url, data=payload, headers=headers) as response:
+            image = BytesIO(await response.read())
 
 
         caption = processed_text if raw_text else None  # Only show the text cromgis used if the text came from a user

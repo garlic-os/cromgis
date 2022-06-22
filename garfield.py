@@ -13,6 +13,9 @@ FIRST_COMIC_DATE = datetime(year=1978, month=6, day=19)
 class GarfieldCommand(commands.Cog):
     """ Also made by garlicOS® """
 
+    def __init__(self, bot):
+        self.bot = bot
+
     def parse_comic_date_text(self, comic_date_text: str) -> datetime:
         if comic_date_text is not None:
             comic_date_text = comic_date_text.lower()
@@ -34,10 +37,9 @@ class GarfieldCommand(commands.Cog):
     async def get_comic_url_by_date(self, year_month_day: str) -> str:
         """ Get the URL of a Garfield comic by date, formatted 'yyyy/mm/dd'. """
         url = GARFIELD_URL + year_month_day
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                response.raise_for_status()
-                html = await response.text()
+        async with self.bot.http_session.get(url) as response:
+            response.raise_for_status()
+            html = await response.text()
 
         # Traverse the HTML extract the comic URL within a <picture> tag
         # Yes, <picture>, not <img>
@@ -81,4 +83,4 @@ class GarfieldCommand(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(GarfieldCommand())
+    bot.add_cog(GarfieldCommand(bot))

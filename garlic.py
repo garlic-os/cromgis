@@ -342,37 +342,6 @@ class GarlicCommands(commands.Cog):
 
 
     # @commands.command()
-    # async def wombo(self, ctx: commands.Context, meme_name: str, *, url: str=None):
-    #     """ Lipsync a face to a meme song using wombo.ai """
-
-    #     # Send the help message for certain words
-    #     # Can't be assed to paginate the memes list right now
-    #     if meme_name in ("help", "memes", "songs"):
-    #         meme_names = list(wombo.MEMES.keys())
-    #         with TemporaryFile() as f_memes:
-    #             f_memes.writelines(meme_names)
-    #             await ctx.send(
-    #                 "These are the names of the memes you can use\n",
-    #                 file=discord.file(f_memes, filename="wombo-memes.txt")
-    #             )
-    #         return
-
-    #     # Resolve image URL
-    #     if url is None and len(ctx.message.attachments) == 0:
-    #         raise Exception("No image found! You must give an image URL or upload an attachment.")
-    #     url = url or ctx.message.attachments[0].url
-
-    #     # Download the image from the URL and feed it through the Wombo API
-    #     async with ClientSession() as session:
-    #         async with session.get(url) as response:
-    #             response.raise_for_status()
-    #             image = await response.read()
-    #             video_url = await wombo.make_wombo(image, meme_name, session)
-
-    #     await ctx.reply(video_url)
-
-
-    # @commands.command()
     # async def garlicTest(self, ctx: commands.Context, *, text: str):
     #     embed = Crombed(
     #         title = "Test embed",

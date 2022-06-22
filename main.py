@@ -26,7 +26,8 @@ logger.setLevel(logging.INFO)
 
 
 class OoerBot(commands.AutoShardedBot):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.http_session = ClientSession()
 
     def __del__(self):

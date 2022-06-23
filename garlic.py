@@ -355,7 +355,5 @@ class GarlicCommands(commands.Cog):
             return await message.channel.send(random_member.mention)
 
 
-
-
 def setup(bot):
     bot.add_cog(GarlicCommands(bot))

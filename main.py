@@ -25,7 +25,9 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-class OoerBot(commands.AutoShardedBot):
+class Cromgis(commands.AutoShardedBot):
+    http_session: ClientSession
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.http_session = ClientSession()
@@ -59,7 +61,7 @@ print("Initializing bot...")
 intents = discord.Intents.default()
 intents.members = True
 
-bot = OoerBot(
+bot = Cromgis(
     command_prefix = (os.environ["COMMAND_PREFIX"], os.environ["COMMAND_PREFIX"].capitalize()),
     owner_ids = json.loads(os.environ["BOT_OWNERS"]),
     case_insensitive = True,

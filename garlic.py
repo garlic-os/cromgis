@@ -4,9 +4,9 @@ import json
 import zlib
 import base64
 import os
+from main import Cromgis
 from urllib.parse import urlparse
 from discord.ext import commands
-from aiohttp import ClientSession
 from io import BytesIO
 from utils import Crombed, chance, random_string
 from garlic_functions import (generate_scream, generate_screech, ProbDist,
@@ -19,10 +19,12 @@ REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
 class GarlicCommands(commands.Cog):
     """ Commands made by garlicOS®! """
 
-    def __init__(self, bot):
-        self.bot = bot
-        self.craiyon_failure_embed = Crombed(
-            title="Craiyon instance expired",\
+    def __init__(self, bot: Cromgis):
+        self.bot: Cromgis = bot
+        self.spoilerize_ai_images: bool = os.environ.get("SPOILERIZE_AI_IMAGES", "").lower() in ("true", "1")
+        self.craiyon_url: str = ""
+        self.craiyon_failure_embed: Crombed = Crombed(
+            title="Craiyon instance expired",
             description="cromgis needs a new Craiyon link.\n"
             "[Follow the instructions on this webpage](https://colab.research.google.com/drive/1uGpVB4GngBdONlHebVJ5maVFZDV-gtIe)"
             " to get one, then do `ooer relink <new_link>` to restore `ooer craiyon`.",
@@ -217,24 +219,16 @@ class GarlicCommands(commands.Cog):
 
     @commands.command(aliases=["picture", "photo", "photograph"])
     @commands.cooldown(2, 4, commands.BucketType.user)
-    async def image(self, ctx: commands.Context, *, raw_text: str = None):
+    async def image(self, ctx: commands.Context, *, text: str=None):
         """
         Generate an image from text using the Text to Image API made by
         Scott Ellison Reed on deepai.org.
         """
-        if raw_text:
-            processed_text = humanize_text(ctx.message, raw_text)
-        else:
-            processed_text = random_string(32)
+        prompt = humanize_text(ctx.message, text) if text else random_string(32)
+        print(f"[garlic.py] Fetching an ooer image based on text \"{prompt}\"...")
 
-        print(f"[garlic.py] Fetching an ooer image based on text \"{processed_text}\"...")
-
-        payload = {
-            "text": processed_text,
-        }
-        headers = {
-            "api-key": os.environ["DEEPAI_API_KEY"],
-        }
+        payload = {"text": prompt}
+        headers = {"api-key": os.environ["DEEPAI_API_KEY"]}
         async with self.bot.http_session.post(
             "https://api.deepai.org/api/text2img",
             data=payload,
@@ -245,44 +239,39 @@ class GarlicCommands(commands.Cog):
         try:
             url = response["output_url"]
         except KeyError:
-            raise Exception(f"Expected key 'output_url': {str(response)}")
-
+            raise KeyError(f"Expected key 'output_url': {str(response)}")
 
         async with self.bot.http_session.get(url, data=payload, headers=headers) as response:
             image = BytesIO(await response.read())
 
-
-        caption = processed_text if raw_text else None  # Only show the text cromgis used if the text came from a user
         file_name = os.path.basename(urlparse(url).path)
-
-        if os.environ.get("SPOILERIZE_AI_IMAGES", "").lower() in ("true", "1"):
+        if self.spoilerize_ai_images:
             file_name = "SPOILER_" + file_name
 
-        await ctx.reply(f"> **Image**\n> {caption}", file=discord.File(image, filename=file_name))
+        await ctx.reply(
+            f"> **Image**\n> {text}",
+            file=discord.File(image, filename=file_name)
+        )
 
 
     @commands.command(aliases=["dalle", "crayon"])
     @commands.cooldown(2, 4, commands.BucketType.user)
-    async def craiyon(self, ctx: commands.Context, *, text: str = None):
+    async def craiyon(self, ctx: commands.Context, *, text: str=None):
         """
         Generate an image from a self-hosted Craiyon instance. (Formerly known
         as Dall⋅E Mini)
         """
-        if not hasattr(self.bot, "craiyon_url") or self.bot.craiyon_url is None:
+        if not self.craiyon_url:
             return await ctx.reply(embed=self.craiyon_failure_embed)
 
-        if text is not None:
-            prompt = humanize_text(ctx.message, text)
-        else:
-            prompt = random_string(32)
-
+        prompt = humanize_text(ctx.message, text) if text else random_string(32)
         print(f"[garlic.py] Fetching an ooer craiyon based on prompt \"{prompt}\"...")
 
         payload = {
             "text": prompt,
             "num_images": 1,
         }
-        async with self.bot.http_session.post(f"{self.bot.craiyon_url}/dalle", json=payload) as response:
+        async with self.bot.http_session.post(self.craiyon_url + "/dalle", json=payload) as response:
             data_uri = json.loads(await response.text())["generatedImgs"][0]
 
         if len(data_uri) < 500:
@@ -293,11 +282,7 @@ class GarlicCommands(commands.Cog):
         # we need it as a file-like object.
         image = BytesIO(base64.b64decode(data_uri))
 
-        if os.environ.get("SPOILERIZE_AI_IMAGES", "").lower() in ("true", "1"):
-            file_name = "SPOILER_craiyon.jpg"
-        else:
-            file_name = "craiyon.jpg"
-
+        file_name = "SPOILER_craiyon.jpg" if self.spoilerize_ai_images else "craiyon.jpg"
         await ctx.reply(
             f"> **Craiyon Image**\n> {text}",
             file=discord.File(image, filename=file_name)
@@ -308,8 +293,11 @@ class GarlicCommands(commands.Cog):
     @commands.cooldown(2, 4, commands.BucketType.user)
     async def relink(self, ctx: commands.Context, url: str):
         """ Set a new Craiyon instance URL. """
-        self.bot.craiyon_url = url
-        await ctx.reply("Craiyon instance URL set. `ooer craiyon` is available once more")
+        async with self.bot.http_session.options(url + "/dalle") as response:
+            if not response.ok:
+                raise ValueError("❌ No Craiyon instance found at that URL.")
+        self.craiyon_url = url
+        await ctx.reply("✅ Craiyon instance URL set. `ooer craiyon` is available once more")
 
 
     @commands.Cog.listener()
@@ -350,5 +338,5 @@ class GarlicCommands(commands.Cog):
             return await message.channel.send(random_member.mention)
 
 
-def setup(bot):
+def setup(bot: Cromgis):
     bot.add_cog(GarlicCommands(bot))

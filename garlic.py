@@ -13,11 +13,6 @@ from garlic_functions import (generate_scream, generate_screech, ProbDist,
                               string_to_bf, run_bf,
                               humanize_text)
 
-# from pyimgur import Imgur
-
-
-# imgur = Imgur(os.environ["IMGUR_CLIENT_ID"])
-
 REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
 
 

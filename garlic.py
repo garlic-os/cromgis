@@ -271,8 +271,13 @@ class GarlicCommands(commands.Cog):
             "text": prompt,
             "num_images": 1,
         }
-        async with self.bot.http_session.post(self.craiyon_url + "/dalle", json=payload) as response:
-            data_uri = json.loads(await response.text())["generatedImgs"][0]
+        try:
+            async with self.bot.http_session.post(self.craiyon_url + "/dalle", json=payload) as response:
+                if not response.ok:
+                    return await ctx.reply(embed=self.craiyon_failure_embed)
+                data_uri = json.loads(await response.text())["generatedImgs"][0]
+        except:
+            return await ctx.reply(embed=self.craiyon_failure_embed)
 
         if len(data_uri) < 500:
             return await ctx.reply(embed=self.craiyon_failure_embed)

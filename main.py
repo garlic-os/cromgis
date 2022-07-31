@@ -85,7 +85,7 @@ async def ping(ctx):
     await ctx.send(f"Ping! Took **{round(bot.latency * 1000, 2)}** ms")
 
 extensions = ["jishaku", 'letters', "delphi", "garlic", "asher", "lumien",
-              "invalid", "garfield", "qwerty", "aquaa"]  # put this... somewhere, later
+              "invalid", "garfield", "korbo", "aquaa"]  # put this... somewhere, later
 for extension in extensions:
     try:
         print(f"Loading extension {extension}...")

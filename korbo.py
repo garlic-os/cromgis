@@ -29,5 +29,5 @@ class KorboCommands(commands.Cog):
                            ' has shlurped up' + human.mention + ". :yum:")
 
 
-def setup(bot):
-    bot.add_cog(KorboCommands(bot))
+async def setup(bot):
+    await bot.add_cog(KorboCommands(bot))

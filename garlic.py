@@ -343,5 +343,5 @@ class GarlicCommands(commands.Cog):
             return await message.channel.send(random_member.mention)
 
 
-def setup(bot: Cromgis):
-    bot.add_cog(GarlicCommands(bot))
+async def setup(bot):
+    await bot.add_cog(GarlicCommands(bot))

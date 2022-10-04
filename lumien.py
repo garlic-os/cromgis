@@ -44,5 +44,5 @@ class LumienCommands(commands.Cog):
         index = split[1]
         await ctx.send(alias_string_map[index])
 
-def setup(bot):
-    bot.add_cog(LumienCommands(bot))
+async def setup(bot):
+    await bot.add_cog(LumienCommands(bot))

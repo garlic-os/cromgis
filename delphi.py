@@ -94,5 +94,5 @@ class DelphiCommands(commands.Cog):
 
 
 
-def setup(bot):
-    bot.add_cog(DelphiCommands(bot))
+async def setup(bot):
+    await bot.add_cog(DelphiCommands(bot))

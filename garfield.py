@@ -82,5 +82,5 @@ class GarfieldCommand(commands.Cog):
         await ctx.send(comic_url)
 
 
-def setup(bot):
-    bot.add_cog(GarfieldCommand(bot))
+async def setup(bot):
+    await bot.add_cog(GarfieldCommand(bot))

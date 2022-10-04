@@ -81,5 +81,5 @@ class AsherCommands(commands.Cog):
 
 
 
-def setup(bot):
-    bot.add_cog(AsherCommands(bot))
+async def setup(bot):
+    await bot.add_cog(AsherCommands(bot))

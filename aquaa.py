@@ -10,5 +10,5 @@ class AquaaCommands(commands.Cog):
         # Say "ooo 😂" 
         await ctx.channel.send("ooo :joy:")
       
-def setup(bot):
-    bot.add_cog(AquaaCommands(bot))
+async def setup(bot):
+    await bot.add_cog(AquaaCommands(bot))

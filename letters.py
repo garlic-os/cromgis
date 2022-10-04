@@ -134,5 +134,5 @@ class LettersCmds(commands.Cog):
         await ctx.send(embed=emb)
 
 
-def setup(bot):
-    bot.add_cog(LettersCmds(bot))
+async def setup(bot):
+    await bot.add_cog(LettersCmds(bot))

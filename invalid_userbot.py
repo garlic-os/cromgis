@@ -47,5 +47,5 @@ class UserBotCommands(commands.Cog):
       await replaceMessage(message, text, username)
 
               
-def setup(bot):
-    bot.add_cog(UserBotCommands(bot))
+async def setup(bot):
+    await bot.add_cog(UserBotCommands(bot))

@@ -9,7 +9,8 @@ import logging
 import os
 import json
 import random
-from aiohttp import ClientSession
+import asyncio
+import aiohttp
 from utils import Crombed
 from failure import failure_phrases
 import discord
@@ -26,14 +27,11 @@ logger.setLevel(logging.INFO)
 
 
 class Cromgis(commands.AutoShardedBot):
-    http_session: ClientSession
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.http_session = ClientSession()
+    http_session: aiohttp.ClientSession
 
     def __del__(self):
-        self.http_session.close()
+        if hasattr(self, "http_session"):
+            asyncio.run(self.http_session.close())
 
     async def on_message(self, message):
         if message.author.bot:  # this will catch webhooks as well iirc
@@ -56,10 +54,23 @@ class Cromgis(commands.AutoShardedBot):
         await ctx.reply(embed=embed)
         print(f"\n{exception}\n")
 
+    async def setup_hook(self) -> None:
+        self.http_session = aiohttp.ClientSession(loop=self.loop)
+        extensions = ["jishaku", 'letters', "delphi", "garlic", "asher", "lumien",
+              "invalid", "garfield", "korbo", "aquaa"]  # put this... somewhere, later
+        for extension in extensions:
+            try:
+                print(f"Loading extension {extension}...")
+                await bot.load_extension(extension)
+                bot.logger.info(f"Loaded extension {extension}")
+            except Exception as e:
+                bot.logger.error(f"Failed to load extension {extension}; {e}")
+
 
 print("Initializing bot...")
 intents = discord.Intents.default()
 intents.members = True
+intents.message_content = True
 
 bot = Cromgis(
     command_prefix = (os.environ["COMMAND_PREFIX"], os.environ["COMMAND_PREFIX"].capitalize()),
@@ -84,15 +95,6 @@ async def ping(ctx):
     """ Respond with the bot's reponse time. """
     await ctx.send(f"Ping! Took **{round(bot.latency * 1000, 2)}** ms")
 
-extensions = ["jishaku", 'letters', "delphi", "garlic", "asher", "lumien",
-              "invalid", "garfield", "korbo", "aquaa"]  # put this... somewhere, later
-for extension in extensions:
-    try:
-        print(f"Loading extension {extension}...")
-        bot.load_extension(extension)
-        bot.logger.info(f"Loaded extension {extension}")
-    except Exception as e:
-        bot.logger.error(f"Failed to load extension {extension}; {e}")
 
 
 print("Logging in...")

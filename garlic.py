@@ -4,7 +4,7 @@ import json
 import zlib
 import base64
 import os
-from main import Cromgis
+# from main import Cromgis
 from urllib.parse import urlparse
 from discord.ext import commands
 from io import BytesIO
@@ -19,8 +19,8 @@ REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
 class GarlicCommands(commands.Cog):
     """ Commands made by garlicOS®! """
 
-    def __init__(self, bot: Cromgis):
-        self.bot: Cromgis = bot
+    def __init__(self, bot):
+        self.bot = bot
         self.spoilerize_ai_images: bool = os.environ.get("SPOILERIZE_AI_IMAGES", "").lower() in ("true", "1")
         self.craiyon_url: str = ""
         self.craiyon_failure_embed: Crombed = Crombed(

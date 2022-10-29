@@ -11,7 +11,7 @@ from io import BytesIO
 from utils import Crombed, chance, random_string
 from garlic_functions import (generate_scream, generate_screech, ProbDist,
                               string_to_bf, run_bf,
-                              humanize_text)
+                              humanize_text, filter_naughty_words)
 
 REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
 
@@ -224,7 +224,7 @@ class GarlicCommands(commands.Cog):
         Generate an image from text using the Text to Image API made by
         Scott Ellison Reed on deepai.org.
         """
-        prompt = humanize_text(ctx.message, text) if text else random_string(32)
+        prompt = filter_naughty_words(humanize_text(ctx.message, text)) if text else random_string(32)
         print(f"[garlic.py] Fetching an ooer image based on text \"{prompt}\"...")
 
         payload = {"text": prompt}
@@ -249,7 +249,7 @@ class GarlicCommands(commands.Cog):
             file_name = "SPOILER_" + file_name
 
         await ctx.reply(
-            f"> **Image**\n> {text}",
+            f"> **Image**\n> {prompt}",
             file=discord.File(image, filename=file_name)
         )
 
@@ -264,7 +264,7 @@ class GarlicCommands(commands.Cog):
         if not self.craiyon_url:
             return await ctx.reply(embed=self.craiyon_failure_embed)
 
-        prompt = humanize_text(ctx.message, text) if text else random_string(32)
+        prompt = filter_naughty_words(humanize_text(ctx.message, text)) if text else random_string(32)
         print(f"[garlic.py] Fetching an ooer craiyon based on prompt \"{prompt}\"...")
 
         payload = {
@@ -289,7 +289,7 @@ class GarlicCommands(commands.Cog):
 
         file_name = "SPOILER_craiyon.jpg" if self.spoilerize_ai_images else "craiyon.jpg"
         await ctx.reply(
-            f"> **Craiyon Image**\n> {text}",
+            f"> **Craiyon Image**\n> {prompt}",
             file=discord.File(image, filename=file_name)
         )
 

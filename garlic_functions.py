@@ -4,6 +4,8 @@ import random
 import nbfi
 import base64
 import zlib
+import requests
+import re
 
 
 def generate_scream() -> str:
@@ -279,3 +281,10 @@ def humanize_text(message: Message, text: str) -> str:
     for role in message.role_mentions:
         text = text.replace(role.mention, role.name)
     return text
+
+
+naughty_words = requests.get("https://gist.github.com/ryanlewis/a37739d710ccdb4b406d/raw/0fbd315eb2900bb736609ea894b9bde8217b991a/google_twunter_lol")
+naughty_words = "(" + naughty_words.text.replace("\r", "").replace("\n", ")|(") + ")"
+naughty_words = re.compile(naughty_words, re.IGNORECASE)
+def filter_naughty_words(text: str) -> str:
+    return re.sub(naughty_words, "", text)

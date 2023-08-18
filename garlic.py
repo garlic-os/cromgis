@@ -217,7 +217,10 @@ class GarlicCommands(commands.Cog):
         await ctx.reply(embed=embed)
 
 
-    @commands.command(aliases=["picture", "photo", "photograph"])
+    @commands.command(
+        aliases=["picture", "photo", "photograph"],
+        enabled=False  # API cost is too expensive now
+    )
     @commands.cooldown(2, 4, commands.BucketType.user)
     async def image(self, ctx: commands.Context, *, text: str=None):
         """

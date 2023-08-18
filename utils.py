@@ -11,14 +11,12 @@ class Crombed(discord.Embed):
     """
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
         self.crombed_args = kwargs
-
+        del kwargs["color_name"]
+        super().__init__(**kwargs)
         self.set_color_by_name()
         self.set_author_by_user()
         self.set_image_by_name()
-
         del self.crombed_args
 
 

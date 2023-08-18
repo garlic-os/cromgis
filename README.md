@@ -1,8 +1,11 @@
+# cromgis
+Alternate title: _/r/Ooer Discord Server Plays Python IDE_
+
 ```css
 {ooer is:an('experimental')}[tech]support.forum{founded on:the('philosophy')}[that]everyone.has{something that:they('can')}[contribute].
 ```
 
-# Boot up your very own version of cromgis!
+## Boot up your very own version of cromgis!
 1. [Create a Discord bot account](https://discordpy.readthedocs.io/en/latest/discord.html)
 2. [Clone this repo](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/cloning-a-repository-from-github-to-github-desktop)
 3. Run [`poetry install`](https://python-poetry.org/docs/) in the project's directory

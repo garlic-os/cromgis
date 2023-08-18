@@ -5,6 +5,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 
+import asyncio_atexit
 import logging
 import os
 import json
@@ -29,9 +30,9 @@ logger.setLevel(logging.INFO)
 class Cromgis(commands.AutoShardedBot):
     http_session: aiohttp.ClientSession
 
-    def __del__(self):
+    async def cleanup(self):
         if hasattr(self, "http_session"):
-            asyncio.run(self.http_session.close())
+            await self.http_session.close()
 
     async def on_message(self, message):
         if message.author.bot:  # this will catch webhooks as well iirc
@@ -56,6 +57,7 @@ class Cromgis(commands.AutoShardedBot):
 
     async def setup_hook(self) -> None:
         self.http_session = aiohttp.ClientSession(loop=self.loop)
+        asyncio_atexit.register(self.cleanup, loop=self.loop)
         extensions = ["jishaku", 'letters', "delphi", "garlic", "asher", "lumien",
               "invalid", "garfield", "korbo", "aquaa"]  # put this... somewhere, later
         for extension in extensions:

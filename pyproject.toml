@@ -1,22 +1,26 @@
-[build-system]
-build-backend = "poetry.masonry.api"
-requires = ["poetry>=1.1.5"]
-
-[tool]
 [tool.poetry]
-authors = ["Your Name <you@example.com>"]
-description = ""
 name = "cromgis"
 version = "0.1.0"
+description = ""
+authors = ["Nate <14845347+garlic-os@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+
 [tool.poetry.dependencies]
+python = "^3.10.0"
 Pillow = "^9.0.1"
 dataset = "^1.5.2"
-"discord.py" = "^1.6.0"
-jishaku = "^1.18"
 markovify = "^0.8.0"
 nbfi = "^0.1.2"
-python = "3.10.5"
 python-dotenv = "^0.14.0"
-typing-extensions = "^3.10.0"
 scipy = "^1.7.3"
-[tool.poetry.dev-dependencies]
+discord-py = "^2.3.2"
+jishaku = "^2.5.1"
+python-dateutil = "^2.8.2"
+requests = "^2.31.0"
+asyncio-atexit = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

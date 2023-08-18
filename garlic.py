@@ -4,7 +4,6 @@ import json
 import zlib
 import base64
 import os
-# from main import Cromgis
 from urllib.parse import urlparse
 from discord.ext import commands
 from io import BytesIO
@@ -255,57 +254,6 @@ class GarlicCommands(commands.Cog):
             f"> **Image**\n> {text}",
             file=discord.File(image, filename=file_name)
         )
-
-
-    @commands.command(aliases=["dalle", "crayon"])
-    @commands.cooldown(2, 4, commands.BucketType.user)
-    async def craiyon(self, ctx: commands.Context, *, text: str=None):
-        """
-        Generate an image from a self-hosted Craiyon instance. (Formerly known
-        as Dall⋅E Mini)
-        """
-        if not self.craiyon_url:
-            return await ctx.reply(embed=self.craiyon_failure_embed)
-
-        prompt = humanize_text(ctx.message, text) if text else random_string(32)
-        print(f"[garlic.py] Fetching an ooer craiyon based on prompt \"{prompt}\"...")
-
-        payload = {
-            "text": prompt,
-            "num_images": 1,
-        }
-        try:
-            async with self.bot.http_session.post(self.craiyon_url + "/dalle", json=payload) as response:
-                if not response.ok:
-                    return await ctx.reply(embed=self.craiyon_failure_embed)
-                data_uri = json.loads(await response.text())["generatedImgs"][0]
-        except:
-            return await ctx.reply(embed=self.craiyon_failure_embed)
-
-        if len(data_uri) < 500:
-            return await ctx.reply(embed=self.craiyon_failure_embed)
-
-        # Parse response:
-        # response comes as a JPG data URI;
-        # we need it as a file-like object.
-        image = BytesIO(base64.b64decode(data_uri))
-
-        file_name = "SPOILER_craiyon.jpg" if self.spoilerize_ai_images else "craiyon.jpg"
-        await ctx.reply(
-            f"> **Craiyon Image**\n> {text}",
-            file=discord.File(image, filename=file_name)
-        )
-
-
-    @commands.command()
-    @commands.cooldown(2, 4, commands.BucketType.user)
-    async def relink(self, ctx: commands.Context, url: str):
-        """ Set a new Craiyon instance URL. """
-        async with self.bot.http_session.options(url + "/dalle") as response:
-            if not response.ok:
-                raise ValueError("❌ No Craiyon instance found at that URL.")
-        self.craiyon_url = url
-        await ctx.reply("✅ Craiyon instance URL set. `ooer craiyon` is available once more")
 
 
     @commands.Cog.listener()

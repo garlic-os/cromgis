@@ -9,8 +9,18 @@ class Crombed(discord.Embed):
     Concept definitely not stolen from crimsoBOT's source code:
     https://github.com/crimsobot/crimsoBOT/blob/0bbe9d0847d169ff5d124c92f00c2e71127d021a/crimsobot/utils/tools.py
     """
+    colors = {
+        "flesh": 0x98784C,
+        "red":   0xD32F2F,
+        "squid": 0xBEF4C3,
+        "teal":  0x1EC9A1
+    }
 
     def __init__(self, **kwargs):
+        if self.color is None:
+            color_name = kwargs.get("color_name", "flesh")
+            kwargs["color"] = Crombed.colors[color_name]
+            kwargs.pop("color_name", None)
         super().__init__(**kwargs)
 
         self.crombed_args = kwargs

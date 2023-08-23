@@ -14,7 +14,7 @@ class LumienCommands(commands.Cog):
     @commands.command(aliases=['inspirobot', 'inspiro', 'inspiration'])
     async def inspire(self, ctx):
         """ Pulls a motivational image from inspirobot.me. """
-        await ctx.channel.trigger_typing()
+        await ctx.channel.typing()
         user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0"
         api_url = "http://inspirobot.me/api?generate=true"
         path_response = urllib.request.urlopen(urllib.request.Request(api_url,headers={"User-Agent":user_agent}))

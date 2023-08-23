@@ -100,7 +100,7 @@ class KoshCommands(commands.Cog):
     @commands.command()
     async def essay(self, ctx: commands.Context, model_name: str = "asher-model.pickle"):
         """ Generate an Kosh-esque essay. [sentences | \"max\"]"""
-        await ctx.channel.trigger_typing()
+        await ctx.channel.typing()
         model = self.models.get(model_name, None)
         if model is None:
             raise ValueError("Invalid model name")

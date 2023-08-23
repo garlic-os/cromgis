@@ -51,7 +51,7 @@ try:
 except FileNotFoundError:
     print("[asher.py] Cached asher model not found. Regenerating from corpus.")
     asher_markov = regenerate()
-    
+
 
 
 class AsherCommands(commands.Cog):
@@ -64,7 +64,7 @@ class AsherCommands(commands.Cog):
     @commands.command()
     async def essay(self, ctx: commands.Context, sentence_count_goal=5):
         """ Generate an Asherian essay. [sentences | \"max\"]"""
-        await ctx.channel.trigger_typing()
+        await ctx.channel.typing()
 
         if sentence_count_goal == "max":
             sentence_count_goal = 500

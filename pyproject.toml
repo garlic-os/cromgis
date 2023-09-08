@@ -19,6 +19,7 @@ jishaku = "^2.5.1"
 python-dateutil = "^2.8.2"
 requests = "^2.31.0"
 asyncio-atexit = "^1.0.1"
+qrcode = "^7.4.2"
 
 
 [build-system]

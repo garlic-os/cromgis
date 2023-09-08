@@ -4,9 +4,10 @@ import json
 import zlib
 import base64
 import os
+import qrcode
 from urllib.parse import urlparse
 from discord.ext import commands
-from io import BytesIO
+from io import BytesIO, StringIO
 from utils import Crombed, chance, random_string
 from garlic_functions import (generate_scream, generate_screech, ProbDist,
                               string_to_bf, run_bf,
@@ -191,12 +192,10 @@ class GarlicCommands(commands.Cog):
     async def b64encode(self, ctx: commands.Context, *, data: str):
         """ Encode a string to base64. """
         b64_text = base64.b64encode(bytes(data, "utf-8")).decode("utf-8")
-
         embed = Crombed(
             title = "Base64 encoded data",
             description = b64_text
         )
-
         await ctx.reply(embed=embed)
 
 
@@ -205,15 +204,23 @@ class GarlicCommands(commands.Cog):
         """ Decode a base64-encoded string. """
         while len(b64_text) % 4 != 0:
             b64_text += "="
-
         decoded_data = base64.b64decode(b64_text).decode("utf-8")
-
         embed = Crombed(
             title = "Base64 decoded data",
             description = decoded_data
         )
-
         await ctx.reply(embed=embed)
+
+
+    @commands.command(aliases=["qrcode"])
+    async def qr(self, ctx: commands.Context, *, data: str):
+        """ Make a QR code """
+        qr = qrcode.QRCode()
+        qr.add_data(data)
+        buffer = StringIO()
+        qr.print_ascii(out=buffer)
+        buffer.seek(0)
+        await ctx.reply(f"```\n{buffer.read()}\n```")
 
 
     @commands.command(

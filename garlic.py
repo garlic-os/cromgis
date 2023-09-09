@@ -218,32 +218,34 @@ class GarlicCommands(commands.Cog):
 
     @commands.command(
         aliases=["picture", "photo", "photograph"],
-        enabled=False  # API cost is too expensive now
     )
     @commands.cooldown(2, 4, commands.BucketType.user)
     async def image(self, ctx: commands.Context, *, text: str=None):
         """
-        Generate an image from text using the Text to Image API made by
-        Scott Ellison Reed on deepai.org.
+        Generate an image from text using Stable Diffusion.
         """
         prompt = humanize_text(ctx.message, text) if text else random_string(32)
         print(f"[garlic.py] Fetching an ooer image based on text \"{prompt}\"...")
 
-        payload = {"text": prompt}
-        headers = {"api-key": os.environ["DEEPAI_API_KEY"]}
+        payload = {
+            "prompt": prompt,
+            "num_steps": "5",
+            "guidance_scale": 7.5,
+            "width": 512,
+            "height": 512,
+        }
         async with self.bot.http_session.post(
-            "https://api.deepai.org/api/text2img",
+            "https://text2img.org/api/image",
             data=payload,
-            headers=headers
         ) as response:
             response = await response.json()
 
         try:
-            url = response["output_url"]
+            url = response["image"]
         except KeyError:
             raise KeyError(f"Expected key 'output_url': {str(response)}")
 
-        async with self.bot.http_session.get(url, data=payload, headers=headers) as response:
+        async with self.bot.http_session.get(url) as response:
             image = BytesIO(await response.read())
 
         file_name = os.path.basename(urlparse(url).path)

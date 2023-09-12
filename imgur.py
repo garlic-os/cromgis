@@ -41,15 +41,13 @@ class LoopCommand(commands.Cog):
         # Reupload it to imgur because imgur's mp4 links magically loop
         url = "https://api.imgur.com/3/image"
         payload = {
-            "disable_audio": 1
+            "disable_audio": 1,
+            "video": f
         }
-        files = [
-            f
-        ]
         headers = {
             "Authorization": f'Client-ID {os.environ["IMGUR_CLIENT_ID"]}'
         }
-        async with self.bot.http_session.post(url, headers=headers, data=payload, files=files) as response:
+        async with self.bot.http_session.post(url, headers=headers, data=payload) as response:
             response.raise_for_status()
             data = await response.json()
             await ctx.reply(data["data"]["link"])

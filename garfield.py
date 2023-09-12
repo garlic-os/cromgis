@@ -1,8 +1,6 @@
-
 import random
 from datetime import datetime, timezone, timedelta
 from dateutil.parser import parse as parse_date
-import aiohttp
 from discord.ext import commands
 
 GARFIELD_URL = "https://www.gocomics.com/garfield/"

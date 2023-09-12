@@ -59,7 +59,7 @@ class Cromgis(commands.AutoShardedBot):
         self.http_session = aiohttp.ClientSession(loop=self.loop)
         asyncio_atexit.register(self.cleanup, loop=self.loop)
         extensions = ["jishaku", 'letters', "delphi", "garlic", "asher", "lumien",
-              "invalid", "garfield", "korbo", "aquaa"]  # put this... somewhere, later
+              "invalid", "garfield", "korbo", "aquaa", "imgur"]  # put this... somewhere, later
         for extension in extensions:
             try:
                 print(f"Loading extension {extension}...")

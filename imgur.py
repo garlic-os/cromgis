@@ -23,6 +23,21 @@ def reupload_to_imgur(video_url: str) -> str:
     return f"https://i.imgur.com/{image_id}.mp4"
 
 
+async def find_video_url(ctx: commands.Context) -> str:
+    # Check attachments
+    if len(ctx.message.attachments) != 0:
+        return ctx.message.attachments[0]
+    # Check reply for MP4
+    if ctx.message.reference and ctx.message.reference.message_id:
+        reference_message = await ctx.channel.fetch_message(
+            ctx.message.reference.message_id
+        )
+        if len(reference_message.attachments) == 0:
+            raise commands.BadArgument("No video provided")
+        return ctx.message.reference.attachments[0].url
+    raise commands.BadArgument("No video provided")
+
+
 class LoopCommand(commands.Cog):
     """
     Also made by garlicOS®
@@ -36,21 +51,13 @@ class LoopCommand(commands.Cog):
     async def loop(self, ctx: commands.Context, *, video_url: str=None) -> None:
         """ Loop an MP4 """
         await ctx.typing()
-        if video_url is None:
-            # Check reply for MP4
-            if ctx.message.reference and ctx.message.reference.message_id:
-                reference_message = await ctx.channel.fetch_message(
-                    ctx.message.reference.message_id
-                )
-                if len(reference_message.attachments) == 0:
-                    raise commands.BadArgument("No video provided")
-                video_url = ctx.message.reference.attachments[0].url
-            raise commands.BadArgument("No video provided")
+        video_url = video_url or await find_video_url(ctx)
 
         # Reupload it to imgur because imgur's mp4 links magically loop
-        # Run in executor because it's a blocking function
+        # Also run in executor because it blocks for several seconds
         # I would have used aiohttp but it doesn't support sending its own
-        # response content or TemporaryFile objects
+        # response content or TemporaryFile objects so I couldn't use it to
+        # reupload a file
         link = await self.bot.loop.run_in_executor(
             None,
             reupload_to_imgur,

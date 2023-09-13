@@ -1,8 +1,26 @@
-from typing import IO
 
 import os
+import requests
 from discord.ext import commands
-from tempfile import TemporaryFile
+
+
+def reupload_to_imgur(video_url: str) -> str:
+    resp_video = requests.get(video_url)
+    files = {
+        "disable_audio": "1",
+        "video": resp_video.content
+    }
+    params = {
+        "client_id": os.environ["IMGUR_CLIENT_ID"]
+    }
+    resp_upload = requests.post("https://api.imgur.com/3/image", params=params, files=files)
+    ticket = resp_upload.json()["data"]["ticket"]
+
+    # idk what this part is this is just the way the imgur api works
+    params["tickets[]"] = ticket
+    resp_album = requests.get("https://imgur.com/upload/poll", params=params)
+    image_id = resp_album.json()["data"]["done"][ticket]
+    return f"https://i.imgur.com/{image_id}.mp4"
 
 
 class LoopCommand(commands.Cog):
@@ -13,13 +31,6 @@ class LoopCommand(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
-    async def download_temp(self, url: str) -> IO:
-        async with self.bot.http_session.get(url) as response:
-            with TemporaryFile("w+", encoding="utf-8") as f:
-                f.write(await response.text())
-                f.seek(0)
-                return f
 
     @commands.command()
     async def loop(self, ctx: commands.Context, *, video_url: str=None) -> None:
@@ -35,22 +46,17 @@ class LoopCommand(commands.Cog):
                 video_url = ctx.message.reference.attachments[0].url
             raise commands.BadArgument("No video provided")
 
-        # Download the video
-        f = self.download_temp(video_url)
-
         # Reupload it to imgur because imgur's mp4 links magically loop
-        url = "https://api.imgur.com/3/image"
-        payload = {
-            "disable_audio": 1,
-            "video": f
-        }
-        headers = {
-            "Authorization": f'Client-ID {os.environ["IMGUR_CLIENT_ID"]}'
-        }
-        async with self.bot.http_session.post(url, headers=headers, data=payload) as response:
-            response.raise_for_status()
-            data = await response.json()
-            await ctx.reply(data["data"]["link"])
+        # Run in executor because it's a blocking function
+        # I would have used aiohttp but it doesn't support sending its own
+        # response content or TemporaryFile objects
+        link = await self.bot.loop.run_in_executor(
+            executor=None,
+            func=reupload_to_imgur,
+            args=[video_url]
+        )
+
+        await ctx.reply(link)
 
 
 async def setup(bot):

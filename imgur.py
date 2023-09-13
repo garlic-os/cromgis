@@ -35,6 +35,7 @@ class LoopCommand(commands.Cog):
     @commands.command()
     async def loop(self, ctx: commands.Context, *, video_url: str=None) -> None:
         """ Loop an MP4 """
+        await ctx.typing()
         if video_url is None:
             # Check reply for MP4
             if ctx.message.reference and ctx.message.reference.message_id:

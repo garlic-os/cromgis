@@ -34,7 +34,7 @@ def reupload_to_imgur(video_url: str) -> str:
 async def find_video_url(ctx: commands.Context) -> str:
     # Check attachments
     if len(ctx.message.attachments) != 0:
-        return ctx.message.attachments[0]
+        return ctx.message.attachments[0].url
     # Check reply for MP4
     if ctx.message.reference and ctx.message.reference.message_id:
         reference_message = await ctx.channel.fetch_message(

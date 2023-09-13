@@ -6,7 +6,7 @@ import time
 import re
 from discord.ext import commands
 
-pattern_url = re.compile(r"https?:\/\/.+\.(mp4|webm)", re.IGNORECASE)
+pattern_url = re.compile(r"https?:\/\/.+\.(mp4|webm)")
 
 
 def parse_imgur_response(res: requests.Response) -> Any:
@@ -58,13 +58,12 @@ async def find_video_url(ctx: commands.Context) -> str:
             ctx.message.reference.message_id
         )
         # Check reply's text
-        match = pattern_url.match(reference_message.content)
+        match = pattern_url.search(reference_message.content)
         if match is not None:
             return match.group(0)
         # Check reply's attachments
-        if len(reference_message.attachments) == 0:
-            raise commands.BadArgument("No video provided")
-        return reference_message.attachments[0].url
+        if len(reference_message.attachments) != 0:
+            return reference_message.attachments[0].url
     raise commands.BadArgument("No video provided")
 
 

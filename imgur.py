@@ -51,9 +51,9 @@ class LoopCommand(commands.Cog):
         # I would have used aiohttp but it doesn't support sending its own
         # response content or TemporaryFile objects
         link = await self.bot.loop.run_in_executor(
-            executor=None,
-            func=reupload_to_imgur,
-            args=[video_url]
+            None,
+            reupload_to_imgur,
+            video_url
         )
 
         await ctx.reply(link)

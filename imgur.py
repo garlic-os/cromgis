@@ -1,14 +1,15 @@
 
 import os
 import requests
+import time
 from discord.ext import commands
 
 
 def reupload_to_imgur(video_url: str) -> str:
-    resp_video = requests.get(video_url)
     files = {
         "disable_audio": "1",
-        "video": resp_video.content
+        "video": video_url,
+        "type": "URL"
     }
     params = {
         "client_id": os.environ["IMGUR_CLIENT_ID"]
@@ -16,9 +17,16 @@ def reupload_to_imgur(video_url: str) -> str:
     resp_upload = requests.post("https://api.imgur.com/3/image", params=params, files=files)
     ticket = resp_upload.json()["data"]["ticket"]
 
-    # idk what this part is this is just the way the imgur api works
+    # Wait for imgur to finish processing the video
     params["tickets[]"] = ticket
-    resp_album = requests.get("https://imgur.com/upload/poll", params=params)
+    done = {}
+    first_try = True
+    while len(done) == 0:
+        if not first_try:
+            time.sleep(0.2)
+        resp_album = requests.get("https://imgur.com/upload/poll", params=params)
+        done = resp_album.json()["data"]["done"]
+        first_try = False
     image_id = resp_album.json()["data"]["done"][ticket]
     return f"https://i.imgur.com/{image_id}.mp4"
 

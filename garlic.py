@@ -9,9 +9,7 @@ from urllib.parse import urlparse
 from discord.ext import commands
 from io import BytesIO, StringIO
 from utils import Crombed, chance, random_string
-from garlic_functions import (generate_scream, generate_screech, ProbDist,
-                              string_to_bf, run_bf,
-                              humanize_text)
+from garlic_functions import ProbDist, string_to_bf, run_bf, humanize_text
 
 REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
 
@@ -22,18 +20,6 @@ class GarlicCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.spoilerize_ai_images: bool = os.environ.get("SPOILERIZE_AI_IMAGES", "").lower() in ("true", "1")
-
-
-    @commands.command(aliases=["aaa"])
-    async def scream(self, ctx):
-        """ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA """
-        await ctx.send(generate_scream())
-
-
-    @commands.command(aliases=["eee", "ree"])
-    async def screech(self, ctx: commands.Context):
-        """ EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE """
-        await ctx.send(generate_screech())
 
 
     @commands.command(aliases=["meow", "nyan", "kitty", "kitten", "feline"])
@@ -276,17 +262,9 @@ class GarlicCommands(commands.Cog):
             # Chance to say ooo 😂
             return await message.channel.send("ooo :joy:")
 
-        # if "AAA" in message.content.upper():
-        #     """ Scream in response to screams """
-        #     return await message.channel.send(generate_scream())
-
         if "eggs benedict" in message.content.lower():
             # Say "ooo 😂" in response to "eggs benedict", per aquaa's request
             return await message.channel.send("ooo :joy:")
-
-        if "EEE" in message.content.upper():
-            # Screech in response to screeches
-            return await message.channel.send(generate_screech())
 
         if "@someone" in message.content:
             # @someone: ping random user

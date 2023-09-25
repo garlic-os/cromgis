@@ -1,60 +1,12 @@
 from discord import Message
-from utils import chance
 import random
 import nbfi
 import base64
 import zlib
 
 
-def generate_scream() -> str:
-    # Vanilla scream half the time
-    if chance(50):
-        return "A" * random.randint(1, 100)
-
-    # One of these choices repeated 1-100 times
-    body = random.choice(["A", "O"]) * random.randint(1, 100)
-
-    # Chance to wrap the message in one of these Markdown strings
-    formatter = "" if chance(50) else random.choice(["*", "**", "***"])
-
-    # Chance to put one of these at the end of the message
-    suffix = "" if chance(50) else random.choice(["H", "RGH"])
-
-    # Example: "**AAAAAAAAAAAARGH**"
-    text = formatter + body + suffix + formatter
-
-    if chance(50):
-        text = text.lower()
-
-    return text
-
-
-def generate_screech() -> str:
-    # Vanilla screech half the time
-    if chance(50):
-        return "E" * random.randint(1, 100)
-
-    # One of these choices repeated 1-100 times
-    body = "E" * random.randint(1, 100)
-
-    # Chance to wrap the message in one of these Markdown strings
-    formatter = "" if chance(50) else random.choice(["*", "**", "***"])
-
-    # Chance to put an "R" at the beginning of the message
-    prefix = "" if chance(50) else "R"
-
-    # Example: "**REEEEEEEEEEEEEEEEEEE**"
-    text = formatter + prefix + body + formatter
-
-    if chance(50):
-        text = text.lower()
-
-    return text
-
-
 def ooojoy() -> str:
     return "ooo :joy:"
-
 
 
 class ProbDist:

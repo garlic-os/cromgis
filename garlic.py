@@ -69,12 +69,12 @@ class GarlicCommands(commands.Cog):
         await ctx.reply(embed=embed)
 
 
-    @commands.command(aliases=["source", "github"])
+    @commands.command(aliases=["info", "source", "github"])
     async def code(self, ctx: commands.Context):
         """ Look at cromgis's code! """
         embed = Crombed(
             title = "Source code",
-            description = "cromgis is an open-source bot made by the /r/Ooer hivemind. See its code here:\nhttps://github.com/the-garlic-os/cromgis"
+            description = "cromgis is an open-source bot made by the /r/Ooer hivemind. See its code here:\nhttps://github.com/garlic-os/cromgis"
         )
         await ctx.reply(embed=embed)
 

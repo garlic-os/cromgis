@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10.0"
-Pillow = "^9.0.1"
+Pillow = "^10.0.1"
 dataset = "^1.5.2"
 markovify = "^0.8.0"
 nbfi = "^0.1.2"

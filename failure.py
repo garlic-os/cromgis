@@ -17,5 +17,6 @@ failure_phrases = [
     "Ooerror",
     "the ooerror is ooer",
     "error ooer-ror oo-error"
-    "what are you doing"
+    "what are you doing",
+    "latery Eror! Er Erry Err! later!"
 ]

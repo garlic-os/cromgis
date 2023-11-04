@@ -19,4 +19,6 @@ failure_phrases = [
     "error ooer-ror oo-error"
     "what are you doing",
     "latery Eror! Er Erry Err! later!"
+    "ЕГГОГ",
+    "EGGOG",
 ]

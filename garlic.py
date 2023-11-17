@@ -243,7 +243,7 @@ class GarlicCommands(commands.Cog):
 
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message):
         if self.bot.user.id == message.author.id:
             # Do not respond to self
             return
@@ -270,6 +270,14 @@ class GarlicCommands(commands.Cog):
             # @someone: ping random user
             random_member = random.choice(message.guild.members)
             return await message.channel.send(random_member.mention)
+
+        PUPPET_STRING = "||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​|| _ _ _ _ _ _ { ooer puppet "
+        if PUPPET_STRING in message.content.lower():
+            # Puppet: a special command wrapped inside hidden message that lets
+            # you make the bot say whatever you want
+            return await message.channel.send(
+                message.content.lower().split(PUPPET_STRING)[1].strip("}")
+            )
 
 
 async def setup(bot):

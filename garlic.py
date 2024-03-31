@@ -251,9 +251,10 @@ class GarlicCommands(commands.Cog):
         message_author_ids = set()
         message_content = set()
         async for past_message in message.channel.history(limit=REPLY_CHAIN_LENGTH):
-            # Contribute to message chains
-            message_author_ids.add(past_message.author.id)
-            message_content.add(past_message.content)
+            if self.bot.user.id != past_message.author.id:
+                # Contribute to message chains
+                message_author_ids.add(past_message.author.id)
+                message_content.add(past_message.content)
 
         if len(message_content) == 1 and len(message_author_ids) >= REPLY_CHAIN_LENGTH:
             return await message.channel.send(message_content.pop())

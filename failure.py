@@ -21,4 +21,6 @@ failure_phrases = [
     "latery Eror! Er Erry Err! later!"
     "ЕГГОГ",
     "EGGOG",
+    "An error occuAn error oAn error occurred.",
+    "Plearror occuAn error oAn ain later",
 ]

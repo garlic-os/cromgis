@@ -39,7 +39,7 @@ class Comics(commands.Cog):
     def parse_aliases(self, name: str) -> str:
         name = name.lower()
         for official_name in ALIASES:
-            if name in ALIASES[official_name]:
+            if name == official_name or name in ALIASES[official_name]:
                 return official_name
         try:
             return comics.directory.search(name)[0]

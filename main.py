@@ -3,6 +3,7 @@
 # https://discord.gg/GhptsGPd
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 import asyncio_atexit
@@ -43,14 +44,16 @@ class Cromgis(commands.AutoShardedBot):
 
         await self.process_commands(message)
 
-    async def on_command_error(self, ctx: commands.Context, exception: CommandError) -> None:
+    async def on_command_error(
+        self, ctx: commands.Context, exception: CommandError
+    ) -> None:
         # Ignore Command Not Found errors
         if type(exception) is CommandNotFound:
             return
         embed = Crombed(
-            title = random.choice(failure_phrases),
-            description = str(exception),
-            color_name = "red"
+            title=random.choice(failure_phrases),
+            description=str(exception),
+            color_name="red",
         )
         await ctx.reply(embed=embed)
         print(f"\n{exception}\n")
@@ -58,8 +61,19 @@ class Cromgis(commands.AutoShardedBot):
     async def setup_hook(self) -> None:
         self.http_session = aiohttp.ClientSession(loop=self.loop)
         asyncio_atexit.register(self.cleanup, loop=self.loop)
-        extensions = ["jishaku", 'letters', "delphi", "garlic", "asher", "lumien",
-              "invalid", "comics", "korbo", "aquaa", "imgur"]  # put this... somewhere, later
+        extensions = [
+            "jishaku",
+            "letters",
+            "delphi",
+            "garlic",
+            "asher",
+            "lumien",
+            "invalid",
+            "commics",
+            "korbo",
+            "aquaa",
+            "imgur",
+        ]  # put this... somewhere, later
         for extension in extensions:
             try:
                 print(f"Loading extension {extension}...")
@@ -75,9 +89,12 @@ intents.members = True
 intents.message_content = True
 
 bot = Cromgis(
-    command_prefix = (os.environ["COMMAND_PREFIX"], os.environ["COMMAND_PREFIX"].capitalize()),
-    owner_ids = json.loads(os.environ["BOT_OWNERS"]),
-    case_insensitive = True,
+    command_prefix=(
+        os.environ["COMMAND_PREFIX"],
+        os.environ["COMMAND_PREFIX"].capitalize(),
+    ),
+    owner_ids=json.loads(os.environ["BOT_OWNERS"]),
+    case_insensitive=True,
     allowed_mentions=discord.AllowedMentions.none(),
     activity=discord.Game(name="Forged in steel and fire"),
     intents=intents,
@@ -94,9 +111,8 @@ async def on_ready():
 
 @bot.command()
 async def ping(ctx):
-    """ Respond with the bot's reponse time. """
+    """Respond with the bot's reponse time."""
     await ctx.send(f"Ping! Took **{round(bot.latency * 1000, 2)}** ms")
-
 
 
 print("Logging in...")

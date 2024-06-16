@@ -1,9 +1,0 @@
-#!/usr/bin/superkaramba
-
-karamba x=0 y=0 W=66 H=66 locked=true interval=600000
-image x=22 y=0 w=22 h=22 path="img/up.png"
-image x=0 y=22 w=22 h=22 path="img/left.png"
-image x=44 y=22 w=22 h=22 path="img/right.png"
-image x=22 y=44 w=22 h=22 path="img/down.png"
-image x=22 y=22 w=22 h=22 path="img/refresh.png"
-theme path=strip.theme

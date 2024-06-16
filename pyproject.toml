@@ -5,6 +5,7 @@ description = ""
 authors = ["Nate <14845347+garlic-os@users.noreply.github.com>"]
 license = "MIT"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.10.0,<3.12"
@@ -20,6 +21,7 @@ python-dateutil = "^2.8.2"
 requests = "^2.31.0"
 asyncio-atexit = "^1.0.1"
 qrcode = "^7.4.2"
+comics = "^0.3.5"
 
 
 [build-system]

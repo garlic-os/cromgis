@@ -1,3 +1,0 @@
-#!/usr/bin/superkaramba
-
-karamba x=0 y=0 W=1 H=1 locked=true interval=1000

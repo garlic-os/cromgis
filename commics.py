@@ -17,7 +17,7 @@ class Comics(commands.Cog):
 
     def get_comic_api(
         self, name: str, date: str | dt.datetime | None
-    ) -> comics.ComicsAPI:
+    ):  # comics.ComicAPI but its not exposed in the module
         search = comics.search(name)
         if date is str:
             date = date.lower()

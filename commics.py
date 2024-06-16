@@ -52,7 +52,7 @@ class Comics(commands.Cog):
     ) -> None:
         name = self.parse_aliases(name)
         api = self.get_comic_api(name, date_string)
-        await ctx.send(api.get_url())
+        await ctx.send(api.image_url)
 
     @commands.command(aliases=ALIASES["garfield"])
     async def garfield(

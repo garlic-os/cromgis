@@ -17,14 +17,14 @@ class Cheese(commands.Cog):
     def anchors2markdown(tag: bs4.Tag) -> str:
         """Converts any HTML anchors inside a tag to markdown links."""
         for a in tag.find_all("a"):
-            a.replace_with(f"[{a.text}]({a['href']})")
+            a.replace_with(f"[{a.text}]({Cheese.BASE}/{a['href']})")
         return tag.text
 
     @staticmethod
     def summary_point(soup: bs4.BeautifulSoup, emoji: str, class_: str) -> str:
         """Extracts a summary point from the cheese page."""
         text = Cheese.anchors2markdown(soup.find('li', class_=class_).p)
-        return f"- {emoji} {Cheese.BASE}/{text}"
+        return f"- {emoji} {text}"
 
     @staticmethod
     def country_summary_point(soup: bs4.BeautifulSoup) -> str:

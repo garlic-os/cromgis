@@ -24,7 +24,7 @@ class Cheese(commands.Cog):
     def summary_point(soup: bs4.BeautifulSoup, emoji: str, class_: str) -> str:
         """Extracts a summary point from the cheese page."""
         text = Cheese.anchors2markdown(soup.find('li', class_=class_).p)
-        return f"- {emoji} {text}"
+        return f"- {emoji} {Cheese.BASE}/{text}"
 
     @staticmethod
     def country_summary_point(soup: bs4.BeautifulSoup) -> str:

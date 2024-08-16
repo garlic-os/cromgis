@@ -31,20 +31,29 @@ class Cheese(commands.Cog):
         return f"- {emoji} {text}"
 
     @staticmethod
-    def country_summary_point(soup: bs4.BeautifulSoup) -> str:
+    def country_summary_point(soup: bs4.BeautifulSoup) -> Optional[str]:
         """Extracts the country summary point from the cheese page.
         
         It's special because it derives the flag emoji to use based on the
         country.
         """
-        p = soup.find("li", class_="summary_country").p
-        country_name = p.a.text
-        possible_countries = pycountry.countries.search_fuzzy(country_name)
-        if len(possible_countries) > 0:
-            country_code = possible_countries[0].alpha_2.lower()
-            emoji = f":flag_{country_code}:"
-        else:
-            emoji = "🏳️"
+        def country_emoji(p: bs4.Tag) -> str:
+            anchors = p.find_all("a")
+            if len(anchors) > 1:
+                return "🏳️"
+            country_name = anchors[0].text
+            possible_countries = pycountry.countries.search_fuzzy(country_name)
+            if len(possible_countries) > 0:
+                country_code = possible_countries[0].alpha_2.lower()
+                return f":flag_{country_code}:"
+            else:
+                return "🏳️"
+
+        li = soup.find('li', class_='summary_country')
+        if li is None:
+            return None
+        p = li.p
+        emoji = country_emoji(p)
         text = Cheese.anchors2markdown(p)
         return f"- {emoji} {text}"
 

@@ -79,6 +79,7 @@ class Cheese(commands.Cog):
         summary_points = [
             Cheese.summary_point(soup, "🥛", "summary_milk"),
             Cheese.country_summary_point(soup),
+            Cheese.summary_point(soup, "🌍", "summary_region"),
             Cheese.summary_point(soup, "👶", "summary_family"),
             Cheese.summary_point(soup, "📁", "summary_moisture_and_type"),
             Cheese.summary_point(soup, "🧈", "summary_fat"),

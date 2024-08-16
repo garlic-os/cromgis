@@ -1,7 +1,7 @@
 import bs4
 import pycountry
 from discord.ext import commands
-import os.path as op
+
 from utils import Crombed
 
 
@@ -17,7 +17,7 @@ class Cheese(commands.Cog):
     def anchors2markdown(tag: bs4.Tag) -> str:
         """Converts any HTML anchors inside a tag to markdown links."""
         for a in tag.find_all("a"):
-            a.replace_with(f"[{a.text}]({op.join(Cheese.BASE, a['href'])})")
+            a.replace_with(f"[{a.text}]({Cheese.BASE}{a['href']})")
         return tag.text
 
     @staticmethod
@@ -51,15 +51,15 @@ class Cheese(commands.Cog):
         async with self.bot.http_session.get(Cheese.BASE) as response:
             landing_html = await response.text()
         soup = bs4.BeautifulSoup(landing_html, 'lxml')
-        name: str = soup.find("a", class_="more").get("href")[1:-1]
-        url = op.join(Cheese.BASE, name)
+        name = soup.find("a", class_="more").get("href")[1:-1]
+        url = f"{Cheese.BASE}/{name}"
         print("Accessing Cheese of the Day", url)
 
         async with self.bot.http_session.get(url) as response:
             cheese_html = await response.text()
         soup = bs4.BeautifulSoup(cheese_html, 'lxml')
-        image_url: str = soup.find('div', class_='cheese-image-border').a.img['src']
-        image_url = op.join(Cheese.BASE, image_url)
+        image_url = soup.find('div', class_='cheese-image-border').a.img['src']
+        image_url = f"{Cheese.BASE}/{image_url}"
         description_ps = soup.find("div", class_="description").find_all("p")
         description = "\n".join([p.text for p in description_ps]).strip()
         attribution = soup.find("div", class_="image-license").text.strip()

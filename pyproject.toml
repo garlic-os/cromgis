@@ -22,6 +22,8 @@ requests = "^2.31.0"
 asyncio-atexit = "^1.0.1"
 qrcode = "^7.4.2"
 comics = "^0.3.5"
+pycountry = "^24.6.1"
+beautifulsoup4 = "^4.12.3"
 
 
 [build-system]

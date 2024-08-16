@@ -73,6 +73,7 @@ class Cromgis(commands.AutoShardedBot):
             "korbo",
             "aquaa",
             "imgur",
+            "cheese",
         ]  # put this... somewhere, later
         for extension in extensions:
             try:

@@ -1,3 +1,4 @@
+from typing import Optional
 import bs4
 import pycountry
 from discord.ext import commands
@@ -21,9 +22,12 @@ class Cheese(commands.Cog):
         return tag.text
 
     @staticmethod
-    def summary_point(soup: bs4.BeautifulSoup, emoji: str, class_: str) -> str:
+    def summary_point(soup: bs4.BeautifulSoup, emoji: str, class_: str) -> Optional[str]:
         """Extracts a summary point from the cheese page."""
-        text = Cheese.anchors2markdown(soup.find('li', class_=class_).p)
+        li = soup.find('li', class_=class_)
+        if li is None:
+            return None
+        text = Cheese.anchors2markdown(li.p)
         return f"- {emoji} {text}"
 
     @staticmethod
@@ -66,15 +70,21 @@ class Cheese(commands.Cog):
         summary_points = [
             Cheese.summary_point(soup, "🥛", "summary_milk"),
             Cheese.country_summary_point(soup),
+            Cheese.summary_point(soup, "👶", "summary_family"),
             Cheese.summary_point(soup, "📁", "summary_moisture_and_type"),
-            Cheese.summary_point(soup, "📊", "summary_texture"),
+            Cheese.summary_point(soup, "🧈", "summary_fat"),
+            Cheese.summary_point(soup, "🦴", "summary_calcium"),
+            Cheese.summary_point(soup, "👄", "summary_texture"),
+            Cheese.summary_point(soup, "🐚", "summary_rind"),
             Cheese.summary_point(soup, "💧", "summary_tint"),
-            Cheese.summary_point(soup, "🥄", "summary_taste"),
-            Cheese.summary_point(soup, "🍴", "summary_smell"),
+            Cheese.summary_point(soup, "👅", "summary_taste"),
+            Cheese.summary_point(soup, "👃", "summary_smell"),
             Cheese.summary_point(soup, "🥚", "summary_vegetarian"),
             Cheese.summary_point(soup, "🌿", "summary_vegan"),
+            Cheese.summary_point(soup, "🏭", "summary_producer"),
             Cheese.summary_point(soup, "📖", "summary_synonym"),
         ]
+        summary_points = filter(lambda sp: sp is not None, summary_points)
         description += "\n" + "\n".join(summary_points)
 
         embed = Crombed(

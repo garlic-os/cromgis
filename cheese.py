@@ -47,6 +47,7 @@ class Cheese(commands.Cog):
 
     @commands.command()
     async def cheese(self, ctx: commands.Context) -> None:
+        """Get the Cheese of the Day from cheese.com."""
         async with self.bot.http_session.get(Cheese.BASE) as response:
             landing_html = await response.text()
         soup = bs4.BeautifulSoup(landing_html, 'lxml')

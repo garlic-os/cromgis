@@ -98,6 +98,11 @@ class Cheese(commands.Cog):
         summary_points = filter(lambda sp: sp is not None, summary_points)
         description += "\n" + "\n".join(summary_points)
 
+        EMBED_MAX_TEXT_LENGTH = 6000
+        total_length = len(name) + len(description)
+        if total_length > EMBED_MAX_TEXT_LENGTH:
+            description = description[:EMBED_MAX_TEXT_LENGTH - 1] + "…"
+
         embed = Crombed(
             title=name.upper(),
             description=description,

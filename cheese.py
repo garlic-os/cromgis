@@ -64,8 +64,8 @@ class Cheese(commands.Cog):
         async with self.bot.http_session.get(Cheese.BASE) as response:
             landing_html = await response.text()
         soup = bs4.BeautifulSoup(landing_html, 'lxml')
-        name = soup.find("a", class_="more").get("href")[1:-1]
-        url = f"{Cheese.BASE}/{name}"
+        slug = soup.find("a", class_="more").get("href")[1:-1]
+        url = f"{Cheese.BASE}/{slug}"
         print("Accessing Cheese of the Day", url)
 
         async with self.bot.http_session.get(url) as response:
@@ -73,6 +73,7 @@ class Cheese(commands.Cog):
         soup = bs4.BeautifulSoup(cheese_html, 'lxml')
         image_url = soup.find('div', class_='cheese-image-border').a.img['src']
         image_url = f"{Cheese.BASE}/{image_url}"
+        name = soup.find("h1").text.strip()
         description_ps = soup.find("div", class_="description").find_all("p")
         description = "\n".join([p.text for p in description_ps]).strip()
         attribution = soup.find("div", class_="image-license").text.strip()

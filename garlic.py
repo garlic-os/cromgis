@@ -15,6 +15,8 @@ from garlic_functions import ProbDist, humanize_text, run_bf, string_to_bf
 from pxl_srt import pxl_srt
 from utils import Crombed, chance, random_string
 
+from .main import Cromgis
+
 
 REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
 
@@ -22,14 +24,14 @@ REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
 class GarlicCommands(commands.Cog):
 	"""Commands made by garlicOS®!"""
 
-	def __init__(self, bot):
+	def __init__(self, bot: Cromgis) -> None:
 		self.bot = bot
 		self.spoilerize_ai_images: bool = os.environ.get(
 			"SPOILERIZE_AI_IMAGES", ""
 		).lower() in ("true", "1")
 
 	@commands.command(aliases=["meow", "nyan", "kitty", "kitten", "feline"])
-	async def cat(self, ctx: commands.Context):
+	async def cat(self, ctx: commands.Context) -> None:
 		"""Generate a cat from thiscatdoesnotexist.com."""
 		url = f"https://thiscatdoesnotexist.com/?{random_string(32)}"
 
@@ -60,7 +62,7 @@ class GarlicCommands(commands.Cog):
 	#     await ctx.send(embed=embed)
 
 	@commands.command()
-	async def horse(self, ctx: commands.Context):
+	async def horse(self, ctx: commands.Context) -> None:
 		"""Generate a horse from thishorsedoesnotexist.com."""
 		url = f"https://thishorsedoesnotexist.com/?{random_string(32)}"
 
@@ -69,7 +71,7 @@ class GarlicCommands(commands.Cog):
 		await ctx.reply(embed=embed)
 
 	@commands.command(aliases=["info", "source", "github"])
-	async def code(self, ctx: commands.Context):
+	async def code(self, ctx: commands.Context) -> None:
 		"""Look at cromgis's code!"""
 		embed = Crombed(
 			title="Source code",
@@ -78,12 +80,13 @@ class GarlicCommands(commands.Cog):
 		await ctx.reply(embed=embed)
 
 	@commands.command(aliases=["ev"])
-	async def expectedValue(self, ctx: commands.Context, *, json_data: str):
+	async def expectedValue(self, ctx: commands.Context, *, json_data: str) -> None:
 		"""Calculate the expected value of a probability distribution."""
 		try:
 			probabilities = json.loads(json_data)
 		except json.decoder.JSONDecodeError:
-			return await ctx.reply("Syntax error")
+			await ctx.reply("Syntax error")
+			return
 
 		prob_dist = ProbDist(probabilities)
 
@@ -93,12 +96,13 @@ class GarlicCommands(commands.Cog):
 		await ctx.reply(embed=embed)
 
 	@commands.command(aliases=["sd"])
-	async def standardDeviation(self, ctx: commands.Context, *, json_data: str):
+	async def standardDeviation(self, ctx: commands.Context, *, json_data: str) -> None:
 		"""Calculate the standard deviation of a probability distribution."""
 		try:
 			probabilities = json.loads(json_data)
 		except json.decoder.JSONDecodeError:
-			return await ctx.reply("Syntax error")
+			await ctx.reply("Syntax error")
+			return
 
 		prob_dist = ProbDist(probabilities)
 
@@ -109,7 +113,7 @@ class GarlicCommands(commands.Cog):
 		await ctx.reply(embed=embed)
 
 	@commands.command(aliases=["bf"])
-	async def executeBF(self, ctx: commands.Context, *, data: str):
+	async def executeBF(self, ctx: commands.Context, *, data: str) -> None:
 		"""Execute and print the output of a BF program."""
 		program_out = run_bf(data)
 
@@ -118,7 +122,7 @@ class GarlicCommands(commands.Cog):
 		await ctx.reply(embed=embed)
 
 	@commands.command()
-	async def text2bf(self, ctx: commands.Context, *, text: str):
+	async def text2bf(self, ctx: commands.Context, *, text: str) -> None:
 		"""Make a BF program that outputs the given text."""
 		bf_program = string_to_bf(text)
 
@@ -127,7 +131,7 @@ class GarlicCommands(commands.Cog):
 		await ctx.reply(embed=embed)
 
 	@commands.command()
-	async def compress(self, ctx: commands.Context, *, data: str):
+	async def compress(self, ctx: commands.Context, *, data: str) -> None:
 		"""Compress data with zlib (compression level 9)."""
 		compressed_data = zlib.compress(bytes(data, "utf-8"), 9)
 		b64_text = base64.b64encode(compressed_data).decode("utf-8")
@@ -137,7 +141,7 @@ class GarlicCommands(commands.Cog):
 		await ctx.reply(embed=embed)
 
 	@commands.command()
-	async def decompress(self, ctx: commands.Context, *, b64_text: str):
+	async def decompress(self, ctx: commands.Context, *, b64_text: str) -> None:
 		"""Decompress base64-encoded, zlib-compressed data."""
 		decoded = base64.b64decode(b64_text)
 		decompressed = zlib.decompress(decoded).decode("utf-8")
@@ -147,14 +151,14 @@ class GarlicCommands(commands.Cog):
 		await ctx.reply(embed=embed)
 
 	@commands.command(aliases=["b64e", "64e"])
-	async def b64encode(self, ctx: commands.Context, *, data: str):
+	async def b64encode(self, ctx: commands.Context, *, data: str) -> None:
 		"""Encode a string to base64."""
 		b64_text = base64.b64encode(bytes(data, "utf-8")).decode("utf-8")
 		embed = Crombed(title="Base64 encoded data", description=b64_text)
 		await ctx.reply(embed=embed)
 
 	@commands.command(aliases=["b64d", "64d"])
-	async def b64decode(self, ctx: commands.Context, *, b64_text: str):
+	async def b64decode(self, ctx: commands.Context, *, b64_text: str) -> None:
 		"""Decode a base64-encoded string."""
 		while len(b64_text) % 4 != 0:
 			b64_text += "="
@@ -163,7 +167,7 @@ class GarlicCommands(commands.Cog):
 		await ctx.reply(embed=embed)
 
 	@commands.command(aliases=["qrcode"])
-	async def qr(self, ctx: commands.Context, *, data: str):
+	async def qr(self, ctx: commands.Context, *, data: str) -> None:
 		"""Make a QR code"""
 		qr = qrcode.QRCode()
 		qr.add_data(data)
@@ -177,7 +181,7 @@ class GarlicCommands(commands.Cog):
 		enabled=False,  # API cost is too expensive now
 	)
 	@commands.cooldown(2, 4, commands.BucketType.user)
-	async def image(self, ctx: commands.Context, *, text: str = None):
+	async def image(self, ctx: commands.Context, *, text: str | None = None) -> None:
 		"""
 		Generate an image from text using the Text to Image API made by
 		Scott Ellison Reed on deepai.org.
@@ -240,7 +244,7 @@ class GarlicCommands(commands.Cog):
 
 	@commands.command(aliases=["srt", "pxlsrt", "pxl-srt"])
 	@commands.cooldown(2, 4, commands.BucketType.user)
-	async def sort(self, ctx: commands.Context, *, url: str | None = None):
+	async def sort(self, ctx: commands.Context, *, url: str | None = None) -> None:
 		"""
 		Does this https://x.com/IceSolst/status/1877746896233533613
 		"""
@@ -250,7 +254,7 @@ class GarlicCommands(commands.Cog):
 		await ctx.reply(file=discord.File(buffer, filename=file_name))
 
 	@commands.Cog.listener()
-	async def on_message(self, message: discord.Message):
+	async def on_message(self, message: discord.Message) -> None:
 		if self.bot.user.id == message.author.id:
 			# Do not respond to self
 			return
@@ -269,29 +273,34 @@ class GarlicCommands(commands.Cog):
 			len(message_content) == 1
 			and len(message_author_ids) >= REPLY_CHAIN_LENGTH
 		):
-			return await message.channel.send(message_content.pop())
+			await message.channel.send(message_content.pop())
+			return
 
 		if chance(2 / 3):
 			# Chance to say ooo 😂
-			return await message.channel.send("ooo :joy:")
+			await message.channel.send("ooo :joy:")
+			return
 
 		if "eggs benedict" in message.content.lower():
 			# Say "ooo 😂" in response to "eggs benedict", per aquaa's request
-			return await message.channel.send("ooo :joy:")
+			await message.channel.send("ooo :joy:")
+			return
 
 		if "@someone" in message.content:
 			# @someone: ping random user
 			random_member = random.choice(message.guild.members)
-			return await message.channel.send(random_member.mention)
+			await message.channel.send(random_member.mention)
+			return
 
 		PUPPET_STRING = "||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​|| _ _ _ _ ooer puppet "
 		if PUPPET_STRING in message.content.lower():
 			# Puppet: a special command wrapped inside hidden message that lets
 			# you make the bot say whatever you want
-			return await message.channel.send(
+			await message.channel.send(
 				message.content.lower().split(PUPPET_STRING)[1]
 			)
+			return
 
 
-async def setup(bot):
+async def setup(bot: Cromgis) -> None:
 	await bot.add_cog(GarlicCommands(bot))

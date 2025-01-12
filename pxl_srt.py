@@ -1,8 +1,6 @@
-from collections.abc import Callable
-from dataclasses import dataclass
 from enum import Enum
 from io import BytesIO
-from typing import Concatenate, ParamSpec, TypeAlias, cast
+from typing import TYPE_CHECKING
 
 import matplotlib.image as plt
 import numpy as np

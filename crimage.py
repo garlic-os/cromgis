@@ -109,7 +109,7 @@ def resize_img(img: Image.Image, scale: float) -> Image.Image:
 	)
 
 
-# @executor_function
+@executor_function
 def process_lower_level(
 	img: Image.Image,
 	effect: ImageProcessingFunction[P],
@@ -153,7 +153,7 @@ async def process(
 				"GIF too long; need to process only first frame"
 			)
 	# original image begins processing
-	buffer = process_lower_level(img, effect, *args, **kwargs)
+	buffer = await process_lower_level(img, effect, *args, **kwargs)
 	n_bytes = buffer.getbuffer().nbytes
 
 	# if file too large to send via Discord, then resize
@@ -162,7 +162,7 @@ async def process(
 		img = Image.open(buffer)
 		# 0.9x bias to help ensure it comes in under max size
 		scale = 0.9 * MAX_FILESIZE_BYTES / n_bytes
-		buffer = process_lower_level(img, resize_img, scale)
+		buffer = await process_lower_level(img, resize_img, scale)
 		n_bytes = buffer.getbuffer().nbytes
 
 	return buffer

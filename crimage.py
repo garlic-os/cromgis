@@ -16,7 +16,7 @@ from PIL import Image, ImageSequence
 
 
 MAX_FRAMES = 300
-MAX_FILESIZE_BYTES = 10 / 1024 * 1024  # 10MB
+MAX_FILESIZE_BYTES = 10 * 1024 * 1024  # 10MB
 
 
 P = ParamSpec("P")

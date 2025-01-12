@@ -1,3 +1,4 @@
+import asyncio
 import base64
 import json
 import os
@@ -12,10 +13,9 @@ import qrcode
 from discord.ext import commands
 
 from garlic_functions import ProbDist, humanize_text, run_bf, string_to_bf
+from main import Cromgis
 from pxl_srt import pxl_srt
 from utils import Crombed, chance, random_string
-
-from main import Cromgis
 
 
 REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
@@ -266,11 +266,14 @@ class GarlicCommands(commands.Cog):
 		"""
 		Does this https://x.com/IceSolst/status/1877746896233533613
 		"""
-		async with ctx.channel.typing():
-			image_url = await GarlicCommands.get_image_url(ctx, url=url)
-			buffer = await pxl_srt(image_url)
-			file_name = cast(str, os.path.basename(urlparse(image_url).path))
-			await ctx.reply(file=discord.File(buffer, filename=file_name))
+		try:
+			async with ctx.channel.typing(), asyncio.timeout(45):
+				image_url = await GarlicCommands.get_image_url(ctx, url=url)
+				buffer = await pxl_srt(image_url)
+				filename = cast(str, os.path.basename(urlparse(image_url).path))
+				await ctx.reply(file=discord.File(buffer, filename=filename))
+		except TimeoutError:
+			raise Exception("I give up")
 
 	@commands.Cog.listener()
 	async def on_message(self, message: discord.Message) -> None:

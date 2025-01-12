@@ -22,32 +22,8 @@ ImageProcessingFunction: TypeAlias = Callable[  # noqa: UP040
 ]
 
 
-def rbg_to_hsl(r: float, g: float, b: float) -> tuple[float, float, float]:
-	r /= 255
-	g /= 255
-	b /= 255
 
-	channel_max = max(r, g, b)
-	channel_min = min(r, g, b)
-	l = (channel_max + channel_min) / 2
 
-	if channel_max == channel_min:
-		h = s = 0  # achromatic
-	else:
-		d = channel_max - channel_min
-		if l > 0.5:
-			s = d / (2 - channel_max - channel_min)
-		else:
-			s = d / (channel_max + channel_min)
-		if channel_max == r:
-			h = (g - b) / d + (6 if g < b else 0)
-		elif channel_max == g:
-			h = (b - r) / d + 2
-		else:  # channel_max == b
-			h = (r - g) / d + 4
-		h /= 6
-
-	return h * 360, s * 100, l * 100
 
 
 class ColorGroup(Enum):

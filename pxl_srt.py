@@ -9,13 +9,16 @@ from PIL import Image
 import crimage
 
 
+if TYPE_CHECKING:
+	import numpy.typing as npt
+
+
 MAX_FRAMES = 300
 MAX_FILESIZE_BYTES = 10 / 1024 * 1024  # 10MB
 
-
-
-
-
+# Determine color group using strict thresholds
+# Adjust this value to make grouping more/less strict
+TRESHOLD_COLOR_GROUP = 1.2
 
 
 class ColorGroup(Enum):
@@ -29,24 +32,20 @@ class ColorGroup(Enum):
 	MIXED = np.uint8(7)
 
 
-
-# Determine color group using strict thresholds
-# Adjust this value to make grouping more/less strict
-TRESHOLD_COLOR_GROUP = 1.2
-
-
 def sort_pixels_by_color(img: Image.Image) -> Image.Image:
 	"""
-	solst-ice/pxl-srt Python port
+	solst-ice/pxl-srt Python+PIL port
 	https://github.com/solst-ice/pxl-srt/commit/5e82ae6/src/utils/imageProcessing.js
 	"""
-	# raster: NDArray[np.uint8] = plt.pil_to_array(img)
-	raster: np.ndarray[tuple[int, int, int], np.dtype[np.uint8]] = (
-		plt.pil_to_array(img)
-	)
+	# 2D array of image's pixels as received from this function crimsoBOT uses
+	# shape: (..., ..., 4)
+	raster: npt.NDArray[np.uint8] = plt.pil_to_array(img)
 	# assert len(raster.shape) == 3
 	# assert raster.shape[2] == 4
 
+	# 1D array of raster's pixels + extra information per pixel. So pixels can
+	# be sorted as a 1D array
+	# shape: (..., 6)
 	pixels = np.ndarray(
 		(raster.shape[0] * raster.shape[1]),
 		dtype=[
@@ -62,11 +61,17 @@ def sort_pixels_by_color(img: Image.Image) -> Image.Image:
 	# Convert pixels to array of objects with color information
 	for i in range(raster.shape[0]):
 		for j in range(raster.shape[1]):
-			r, g, b, a = raster[i, j]
-			# Calculate luminosity
-			luminosity = (r + g + b) / 3
+			pixel: tuple[np.uint8, np.uint8, np.uint8, np.uint8] = raster[i, j]
+			r, g, b, a = pixel
 
-			if abs(r - g) < 10 and abs(g - b) < 10 and abs(r - b) < 10:
+			# Calculate luminosity
+			luminosity = (np.uint16(r) + g + b) / 3
+
+			if (
+				abs(np.int16(r) - g) < 10
+				and abs(np.int16(g) - b) < 10
+				and abs(np.int16(r) - b) < 10
+			):
 				color_group = ColorGroup.GRAYSCALE
 			elif r > g * TRESHOLD_COLOR_GROUP and r > b * TRESHOLD_COLOR_GROUP:
 				color_group = ColorGroup.RED
@@ -83,22 +88,24 @@ def sort_pixels_by_color(img: Image.Image) -> Image.Image:
 			else:
 				color_group = ColorGroup.MIXED
 
-			pixels[i * raster.shape[0] + j, 0] = r
-			pixels[i * raster.shape[0] + j, 1] = g
-			pixels[i * raster.shape[0] + j, 2] = b
-			pixels[i * raster.shape[0] + j, 3] = a
-			pixels[i * raster.shape[0] + j, 4] = color_group
-			pixels[i * raster.shape[0] + j, 5] = luminosity
+			pixels[i * raster.shape[1] + j][0] = r
+			pixels[i * raster.shape[1] + j][1] = g
+			pixels[i * raster.shape[1] + j][2] = b
+			pixels[i * raster.shape[1] + j][3] = a
+			pixels[i * raster.shape[1] + j][4] = color_group.value
+			pixels[i * raster.shape[1] + j][5] = luminosity
 
 	# Sort the pixels
 	indices = np.lexsort((pixels["color_group"], pixels["luminosity"]))
 	sorted_pixels = pixels[indices]
 
 	# Put sorted pixels back into the raster
+	# throw away the old raster, create a new one that we can write to
+	raster = np.ndarray(shape=raster.shape, dtype=np.uint8)
 	for i in range(raster.shape[0]):
 		for j in range(raster.shape[1]):
 			for k in range(4):
-				raster[i, j, k] = sorted_pixels[i * raster.shape[0] + j, k]
+				raster[i, j, k] = sorted_pixels[i * raster.shape[1] + j][k]
 
 	sorted_raster_fp = BytesIO()
 	plt.imsave(sorted_raster_fp, raster)

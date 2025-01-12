@@ -65,7 +65,7 @@ class Cromgis(commands.AutoShardedBot):
 		asyncio_atexit.register(self.cleanup, loop=self.loop)
 		extensions = [
 			"jishaku",
-			"letters",
+			"i3vie",
 			"delphi",
 			"garlic",
 			"asher",

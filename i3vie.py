@@ -22,8 +22,8 @@ async def commonColor(imgfile):
 	return best
 
 
-class LettersCmds(commands.Cog):
-	"""Commands made by letters"""
+class I3vieCmds(commands.Cog):
+	"""Commands made by i3vie"""
 
 	@commands.command()
 	async def role(self, ctx, *, role: discord.Role):
@@ -144,4 +144,4 @@ class LettersCmds(commands.Cog):
 
 
 async def setup(bot):
-	await bot.add_cog(LettersCmds(bot))
+	await bot.add_cog(I3vieCmds(bot))

@@ -15,7 +15,7 @@ from garlic_functions import ProbDist, humanize_text, run_bf, string_to_bf
 from pxl_srt import pxl_srt
 from utils import Crombed, chance, random_string
 
-from .main import Cromgis
+from main import Cromgis
 
 
 REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])

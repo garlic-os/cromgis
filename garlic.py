@@ -80,7 +80,9 @@ class GarlicCommands(commands.Cog):
 		await ctx.reply(embed=embed)
 
 	@commands.command(aliases=["ev"])
-	async def expectedValue(self, ctx: commands.Context, *, json_data: str) -> None:
+	async def expectedValue(
+		self, ctx: commands.Context, *, json_data: str
+	) -> None:
 		"""Calculate the expected value of a probability distribution."""
 		try:
 			probabilities = json.loads(json_data)
@@ -96,7 +98,9 @@ class GarlicCommands(commands.Cog):
 		await ctx.reply(embed=embed)
 
 	@commands.command(aliases=["sd"])
-	async def standardDeviation(self, ctx: commands.Context, *, json_data: str) -> None:
+	async def standardDeviation(
+		self, ctx: commands.Context, *, json_data: str
+	) -> None:
 		"""Calculate the standard deviation of a probability distribution."""
 		try:
 			probabilities = json.loads(json_data)
@@ -181,7 +185,9 @@ class GarlicCommands(commands.Cog):
 		enabled=False,  # API cost is too expensive now
 	)
 	@commands.cooldown(2, 4, commands.BucketType.user)
-	async def image(self, ctx: commands.Context, *, text: str | None = None) -> None:
+	async def image(
+		self, ctx: commands.Context, *, text: str | None = None
+	) -> None:
 		"""
 		Generate an image from text using the Text to Image API made by
 		Scott Ellison Reed on deepai.org.
@@ -244,7 +250,9 @@ class GarlicCommands(commands.Cog):
 
 	@commands.command(aliases=["srt", "pxlsrt", "pixelsort"])
 	@commands.cooldown(2, 4, commands.BucketType.user)
-	async def sort(self, ctx: commands.Context, *, url: str | None = None) -> None:
+	async def sort(
+		self, ctx: commands.Context, *, url: str | None = None
+	) -> None:
 		"""
 		Does this https://x.com/IceSolst/status/1877746896233533613
 		"""

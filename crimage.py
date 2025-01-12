@@ -98,6 +98,8 @@ async def fetch_image(url: str) -> Image.Image:
 	async with aiohttp.ClientSession() as session:
 		async with session.get(url, allow_redirects=False) as response:
 			img_bytes = await response.read()
+			if len(img_bytes) > MAX_FILESIZE_BYTES:
+				raise Exception("too big")
 			return Image.open(BytesIO(img_bytes))
 
 

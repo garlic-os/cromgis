@@ -118,5 +118,6 @@ async def ping(ctx):
 	await ctx.send(f"Ping! Took **{round(bot.latency * 1000, 2)}** ms")
 
 
-print("Logging in...")
-bot.run(os.environ["DISCORD_BOT_TOKEN"])
+if __name__ == "__main__":
+	print("Logging in...")
+	bot.run(os.environ["DISCORD_BOT_TOKEN"])

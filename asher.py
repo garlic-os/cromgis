@@ -1,9 +1,10 @@
 # Made on Asher's behalf by garlicOS®
 
-from discord.ext import commands
-import markovify
-import random
 import pickle
+import random
+
+import markovify
+from discord.ext import commands
 
 
 def make_proper_sentence(model: markovify.Text) -> str:

@@ -1,14 +1,15 @@
-import discord
-from discord.ext import commands
+import json
+import os
 import random as rand
 import secrets
-import os
 from io import BytesIO
-import json
-from scipy.io import wavfile
+
+import discord
 import numpy
 import requests
 from PIL import Image
+from discord.ext import commands
+from scipy.io import wavfile
 
 
 async def commonColor(imgfile):

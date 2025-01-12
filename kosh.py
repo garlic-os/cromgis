@@ -1,7 +1,10 @@
-from discord.ext import commands
-import markovify
-import random
 import os
+import random
+
+import markovify
+from discord.ext import commands
+
+
 # import pickle
 
 

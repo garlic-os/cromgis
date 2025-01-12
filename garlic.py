@@ -1,17 +1,20 @@
-from typing import cast
-import discord
-import random
-import json
-import zlib
 import base64
+import json
 import os
-import qrcode
-from urllib.parse import urlparse
-from discord.ext import commands
+import random
+import zlib
 from io import BytesIO, StringIO
-from utils import Crombed, chance, random_string
-from garlic_functions import ProbDist, string_to_bf, run_bf, humanize_text
+from typing import cast
+from urllib.parse import urlparse
+
+import discord
+import qrcode
+from discord.ext import commands
+
+from garlic_functions import ProbDist, humanize_text, run_bf, string_to_bf
 from pxl_srt import pxl_srt
+from utils import Crombed, chance, random_string
+
 
 REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])
 

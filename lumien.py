@@ -1,8 +1,8 @@
-import discord
-from discord.ext import commands
-import random
 import io
 import urllib.request
+
+import discord
+from discord.ext import commands
 
 
 class LumienCommands(commands.Cog):
@@ -35,7 +35,7 @@ class LumienCommands(commands.Cog):
 		split = ctx.message.content.split(" ")
 		if split[1] == "interaction":
 			embed = discord.Embed(
-				title=f"The following interactions are possible:",
+				title="The following interactions are possible:",
 				description="\nooer hug\nooer kiss\nooer consume\nooer destroy",
 				color=0xFF48FF,
 			).set_footer(text="Work in progress.")

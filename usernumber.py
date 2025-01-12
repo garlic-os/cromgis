@@ -49,7 +49,7 @@ def generate(user_id: int) -> int:
 def get_counter(user_id: int) -> int:
 	user_id = str(user_id)
 	try:
-		with open("usernumbers.csv", "r") as f:
+		with open("usernumbers.csv") as f:
 			return _get_counter_with_file(f, user_id)
 	except FileNotFoundError:
 		return 0

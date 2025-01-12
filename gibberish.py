@@ -2,8 +2,8 @@
 # Algorithm: Letter-based Markov text generator.
 # Keith Enevoldsen, thinkzone.wlonk.com
 
-import random
 import math
+import random
 
 
 def _char_at(text: str, index: int) -> str:

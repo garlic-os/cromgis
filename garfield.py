@@ -1,7 +1,9 @@
 import random
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
+
 from dateutil.parser import parse as parse_date
 from discord.ext import commands
+
 
 GARFIELD_URL = "https://www.gocomics.com/garfield/"
 GARFIELD_TIMEZONE = timezone(offset=timedelta(hours=-5))

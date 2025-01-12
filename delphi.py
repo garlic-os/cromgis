@@ -2,9 +2,11 @@ if __name__ == "__main__":
 	print("no")
 	raise
 
+import random
+
 import discord
 from discord.ext import commands
-import random
+
 import insult
 
 

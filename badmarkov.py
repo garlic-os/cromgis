@@ -1,7 +1,10 @@
 import random
 import sys
+from collections.abc import ItemsView, Iterable
+from typing import Any, AnyStr
+
 import dataset
-from typing import Any, AnyStr, ItemsView, Iterable
+
 
 root_dir = sys.path[0]
 

@@ -1,4 +1,4 @@
-from typing import Optional
+
 import bs4
 import pycountry
 from discord.ext import commands
@@ -24,7 +24,7 @@ class Cheese(commands.Cog):
 	@staticmethod
 	def summary_point(
 		soup: bs4.BeautifulSoup, emoji: str, class_: str
-	) -> Optional[str]:
+	) -> str | None:
 		"""Extracts a summary point from the cheese page."""
 		li = soup.find("li", class_=class_)
 		if li is None:
@@ -33,7 +33,7 @@ class Cheese(commands.Cog):
 		return f"- {emoji} {text}"
 
 	@staticmethod
-	def country_summary_point(soup: bs4.BeautifulSoup) -> Optional[str]:
+	def country_summary_point(soup: bs4.BeautifulSoup) -> str | None:
 		"""Extracts the country summary point from the cheese page.
 
 		It's special because it derives the flag emoji to use based on the

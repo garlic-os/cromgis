@@ -1,6 +1,7 @@
-import discord
 import random
 import string
+
+import discord
 
 
 class Crombed(discord.Embed):

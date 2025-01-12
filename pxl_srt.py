@@ -1,4 +1,3 @@
-import functools
 from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
@@ -9,7 +8,7 @@ import matplotlib.image as plt
 import numpy as np
 from PIL import Image
 
-import crimage
+from . import crimage
 
 
 MAX_FRAMES = 300
@@ -71,13 +70,22 @@ class Pixel:
 	color_group: ColorGroup
 	luminosity: np.uint8
 
+	# @property
+	# def key(self) -> np.uint16:
+	# 	"""Sort by color group, then luminosity.
 
-@functools.cmp_to_key
-def sort_pixels_key(a: Pixel, b: Pixel) -> int:
-	"""Sort pixels by color group first, then by luminosity"""
-	if a.color_group != b.color_group:
-		return cast(int, a.color_group.value - b.color_group.value)
-	return np.sign(b.luminosity - a.luminosity)
+	# 	Accomplished by packing color group and luminosity (both 8 bits each)
+	# 	into a single (16-bit) number, where color group occupies the more
+	# 	significant 8 bits.
+	# 	"""
+	# 	color_group_16 = np.uint16(self.color_group.value)
+	# 	# no idea why Pylance thinks these are signedinteger[Any]
+	# 	group_shifted = cast(np.uint16, color_group_16 << 8)
+	# 	result = cast(np.uint16, group_shifted | self.luminosity)
+	# 	return result
+
+	# def __lt__(self, other: "Pixel"):
+	# 	return self.key < other.key
 
 
 # below are the blocking image functions (that support GIF) which require the
@@ -100,7 +108,17 @@ def sort_pixels_by_color(img: Image.Image) -> Image.Image:
 	# assert len(raster.shape) == 3
 	# assert raster.shape[2] == 4
 
-	pixels = np.ndarray((raster.shape[0] * raster.shape[1] * 6), np.uint8)
+	pixels = np.ndarray(
+		(raster.shape[0] * raster.shape[1]),
+		dtype=[
+			("r", np.uint8),
+			("g", np.uint8),
+			("b", np.uint8),
+			("a", np.uint8),
+			("color_group", np.uint8),
+			("luminosity", np.uint8),
+		],
+	)
 
 	# Convert pixels to array of objects with color information
 	for i in range(raster.shape[0]):
@@ -126,21 +144,22 @@ def sort_pixels_by_color(img: Image.Image) -> Image.Image:
 			else:
 				color_group = ColorGroup.MIXED
 
-			pixels[i, j, 0] = r
-			pixels[i, j, 1] = g
-			pixels[i, j, 2] = b
-			pixels[i, j, 3] = a
-			pixels[i, j, 4] = color_group
-			pixels[i, j, 5] = luminosity
+			pixels[i * raster.shape[0] + j, 0] = r
+			pixels[i * raster.shape[0] + j, 1] = g
+			pixels[i * raster.shape[0] + j, 2] = b
+			pixels[i * raster.shape[0] + j, 3] = a
+			pixels[i * raster.shape[0] + j, 4] = color_group
+			pixels[i * raster.shape[0] + j, 5] = luminosity
 
 	# Sort the pixels
-	pixels.sort(key=sort_pixels_key)
+	indices = np.lexsort((pixels["color_group"], pixels["luminosity"]))
+	sorted_pixels = pixels[indices]
 
 	# Put sorted pixels back into the raster
 	for i in range(raster.shape[0]):
 		for j in range(raster.shape[1]):
 			for k in range(4):
-				raster[i, j, k] = pixels[i * raster.shape[0] + j, k]
+				raster[i, j, k] = sorted_pixels[i * raster.shape[0] + j, k]
 
 	sorted_raster_fp = BytesIO()
 	plt.imsave(sorted_raster_fp, raster)

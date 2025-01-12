@@ -30,7 +30,7 @@ class LumienCommands(commands.Cog):
 		await ctx.send(file=discord.File(data, "inspirobot.jpg"))
 
 	@commands.command(aliases=["hug", "kiss", "consume", "destroy", "fluff"])
-	async def interaction(self, ctx, victim: discord.User = None):
+	async def interaction(self, ctx, victim: discord.User | None = None):
 		"""hug | kiss | consume | destroy"""
 		split = ctx.message.content.split(" ")
 		if split[1] == "interaction":
@@ -40,7 +40,7 @@ class LumienCommands(commands.Cog):
 				color=0xFF48FF,
 			).set_footer(text="Work in progress.")
 			return await ctx.send(embed=embed)
-		if victim == None:
+		if victim is None:
 			return await ctx.send("<:husk:697167137374208050>")
 		alias_string_map = {
 			"hug": f"**{ctx.author.display_name}** gives **{victim.display_name}** a hug! :heart:",

@@ -13,12 +13,6 @@ MAX_FRAMES = 300
 MAX_FILESIZE_BYTES = 10 / 1024 * 1024  # 10MB
 
 
-P = ParamSpec("P")
-# noqa: UP040 - ruff broken with `type` syntax + ParamSpecs as of v0.8.3
-ImageProcessingFunction: TypeAlias = Callable[  # noqa: UP040
-	Concatenate[Image.Image, P], Image.Image
-]
-
 
 
 

@@ -8,7 +8,7 @@ import matplotlib.image as plt
 import numpy as np
 from PIL import Image
 
-from . import crimage
+import crimage
 
 
 MAX_FRAMES = 300

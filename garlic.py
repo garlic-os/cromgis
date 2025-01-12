@@ -207,6 +207,45 @@ class GarlicCommands(commands.Cog):
 			f"> **Image**\n> {text}",
 			file=discord.File(image, filename=file_name),
 		)
+
+	@staticmethod
+	async def get_image_url(
+		ctx: commands.Context, *, url: str | None = None
+	) -> str:
+		"""Aggressively scour for an image based on command context"""
+		# 1. command argument
+		if url is not None:
+			return url
+		# 2. command message attachment
+		elif len(ctx.message.attachments) > 0:
+			return ctx.message.attachments[0].url
+		# 3. attachment of message the command message replied to
+		elif (
+			ctx.message.reference is not None
+			and ctx.message.reference.message_id is not None
+		):
+			reference = await ctx.fetch_message(
+				ctx.message.reference.message_id
+			)
+			if len(reference.attachments) > 0:
+				return reference.attachments[0].url
+		# 4. just any recent image sent in the chat
+		async for message in ctx.channel.history(before=ctx.message, limit=10):
+			if len(message.attachments) > 0:
+				return message.attachments[0].url
+		raise Exception("No image found")
+
+	@commands.command(aliases=["srt", "pxlsrt", "pxl-srt"])
+	@commands.cooldown(2, 4, commands.BucketType.user)
+	async def sort(self, ctx: commands.Context, *, url: str | None = None):
+		"""
+		Does this https://x.com/IceSolst/status/1877746896233533613
+		"""
+		image_url = await GarlicCommands.get_image_url(ctx, url=url)
+		buffer = await pxl_srt(image_url)
+		file_name = cast(str, os.path.basename(urlparse(image_url).path))
+		await ctx.reply(file=discord.File(buffer, filename=file_name))
+
 	@commands.Cog.listener()
 	async def on_message(self, message: discord.Message):
 		if self.bot.user.id == message.author.id:

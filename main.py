@@ -4,17 +4,16 @@
 
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
-import asyncio_atexit
+import json
 import logging
 import os
-import json
 import random
-import asyncio
+
 import aiohttp
-from utils import Crombed
-from failure import failure_phrases
+import asyncio_atexit
 import discord
 from discord.ext import commands
 from discord.ext.commands.errors import (
@@ -23,6 +22,9 @@ from discord.ext.commands.errors import (
 )
 
 import badmarkov
+from failure import failure_phrases
+from utils import Crombed
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

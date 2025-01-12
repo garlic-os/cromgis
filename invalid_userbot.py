@@ -1,10 +1,11 @@
+import re
+
 import discord
 from discord.ext import commands
 from discord.utils import get
-import re
-import random
+
 from invalid import replaceMessage
-from gibberish import generate_gibberish
+
 
 helpMessage = "```bash\nHere is a list of my commands!\n\nhelp - displays this message.\nsay, [text] - makes me say something.\n```"
 
@@ -25,7 +26,7 @@ async def botMessage(
 class UserBotCommands(commands.Cog):
 	@commands.Cog.listener()
 	async def on_message(self, message):
-		cFile = open("botUsers.txt", "r")
+		cFile = open("botUsers.txt")
 		bots = [line.rstrip() for line in cFile]
 		cFile.close()
 

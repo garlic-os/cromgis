@@ -1,11 +1,13 @@
-from discord.ext import commands
 import random
 import re
+
+from discord.ext import commands
+
 from utils import Crombed
 
 
 def vending_machine():
-	with open("vendingmachine.txt", "r") as vending_machine_file:
+	with open("vendingmachine.txt") as vending_machine_file:
 		the_prize = random.choice(vending_machine_file.readlines())
 
 	return the_prize

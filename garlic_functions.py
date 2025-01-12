@@ -1,8 +1,9 @@
-from discord import Message
-import random
-import nbfi
 import base64
+import random
 import zlib
+
+import nbfi
+from discord import Message
 
 
 def ooojoy() -> str:

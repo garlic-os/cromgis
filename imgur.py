@@ -1,10 +1,11 @@
+import os
+import re
+import time
 from typing import Any
 
-import os
 import requests
-import time
-import re
 from discord.ext import commands
+
 
 pattern_url = re.compile(r"https?:\/\/.+\.(mp4|webm)")
 

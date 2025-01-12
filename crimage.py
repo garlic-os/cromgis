@@ -6,10 +6,10 @@ Copyright (c) 2019 crimso, williammck
 """
 
 import asyncio
-from collections.abc import Callable
 import functools
+from collections.abc import Awaitable, Callable
 from io import BytesIO
-from typing import Awaitable, Concatenate, ParamSpec, TypeAlias, cast
+from typing import Concatenate, ParamSpec, TypeAlias, cast
 
 import aiohttp
 from PIL import Image, ImageSequence

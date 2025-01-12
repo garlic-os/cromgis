@@ -152,6 +152,19 @@ async def process(
 			raise NotImplementedError(
 				"GIF too long; need to process only first frame"
 			)
+
+	# if we have to resize, try to do so before processing to preserve quality
+	n_bytes = img.size[0] * img.size[1]
+	buffer = None
+	while n_bytes > MAX_FILESIZE_BYTES:
+		if buffer is not None:
+			img = Image.open(buffer)
+		scale = 0.9 * MAX_FILESIZE_BYTES / n_bytes
+		buffer = await process_lower_level(img, resize_img, scale)
+		n_bytes = buffer.getbuffer().nbytes
+	if buffer is not None:
+		img = Image.open(buffer)
+
 	# original image begins processing
 	buffer = await process_lower_level(img, effect, *args, **kwargs)
 	n_bytes = buffer.getbuffer().nbytes

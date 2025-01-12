@@ -242,7 +242,7 @@ class GarlicCommands(commands.Cog):
 				return message.attachments[0].url
 		raise Exception("No image found")
 
-	@commands.command(aliases=["srt", "pxlsrt", "pxl-srt"])
+	@commands.command(aliases=["srt", "pxlsrt", "pixelsort"])
 	@commands.cooldown(2, 4, commands.BucketType.user)
 	async def sort(self, ctx: commands.Context, *, url: str | None = None) -> None:
 		"""

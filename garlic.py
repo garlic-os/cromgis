@@ -222,6 +222,13 @@ class GarlicCommands(commands.Cog):
 		)
 
 	@staticmethod
+	def get_image_url_from_message(message: discord.Message) -> str | None:
+		if len(message.attachments) > 0:
+			return message.attachments[0].url
+		if len(message.embeds) > 0 and message.embeds[0].image.url is not None:
+			return message.embeds[0].image.url
+
+	@staticmethod
 	async def get_image_url(
 		ctx: commands.Context, *, url: str | None = None
 	) -> str:
@@ -230,22 +237,25 @@ class GarlicCommands(commands.Cog):
 		if url is not None:
 			return url
 		# 2. command message attachment
-		elif len(ctx.message.attachments) > 0:
-			return ctx.message.attachments[0].url
+		url = GarlicCommands.get_image_url_from_message(ctx.message)
+		if url is not None:
+			return url
 		# 3. attachment of message the command message replied to
-		elif (
+		if (
 			ctx.message.reference is not None
 			and ctx.message.reference.message_id is not None
 		):
 			reference = await ctx.fetch_message(
 				ctx.message.reference.message_id
 			)
-			if len(reference.attachments) > 0:
-				return reference.attachments[0].url
+			url = GarlicCommands.get_image_url_from_message(reference)
+			if url is not None:
+				return url
 		# 4. just any recent image sent in the chat
-		async for message in ctx.channel.history(before=ctx.message, limit=10):
-			if len(message.attachments) > 0:
-				return message.attachments[0].url
+		async for message in ctx.channel.history(before=ctx.message, limit=50):
+			url = GarlicCommands.get_image_url_from_message(message)
+			if url is not None:
+				return url
 		raise Exception("No image found")
 
 	@commands.command(aliases=["srt", "pxlsrt", "pixelsort"])

@@ -248,10 +248,11 @@ class GarlicCommands(commands.Cog):
 		"""
 		Does this https://x.com/IceSolst/status/1877746896233533613
 		"""
-		image_url = await GarlicCommands.get_image_url(ctx, url=url)
-		buffer = await pxl_srt(image_url)
-		file_name = cast(str, os.path.basename(urlparse(image_url).path))
-		await ctx.reply(file=discord.File(buffer, filename=file_name))
+		async with ctx.channel.typing():
+			image_url = await GarlicCommands.get_image_url(ctx, url=url)
+			buffer = await pxl_srt(image_url)
+			file_name = cast(str, os.path.basename(urlparse(image_url).path))
+			await ctx.reply(file=discord.File(buffer, filename=file_name))
 
 	@commands.Cog.listener()
 	async def on_message(self, message: discord.Message) -> None:

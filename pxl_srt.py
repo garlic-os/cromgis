@@ -35,35 +35,6 @@ class ColorGroup(Enum):
 	MIXED = np.uint8(7)
 
 
-@dataclass
-class Pixel:
-	r: np.uint8
-	g: np.uint8
-	b: np.uint8
-	a: np.uint8
-	color_group: ColorGroup
-	luminosity: np.uint8
-
-	# @property
-	# def key(self) -> np.uint16:
-	# 	"""Sort by color group, then luminosity.
-
-	# 	Accomplished by packing color group and luminosity (both 8 bits each)
-	# 	into a single (16-bit) number, where color group occupies the more
-	# 	significant 8 bits.
-	# 	"""
-	# 	color_group_16 = np.uint16(self.color_group.value)
-	# 	# no idea why Pylance thinks these are signedinteger[Any]
-	# 	group_shifted = cast(np.uint16, color_group_16 << 8)
-	# 	result = cast(np.uint16, group_shifted | self.luminosity)
-	# 	return result
-
-	# def __lt__(self, other: "Pixel"):
-	# 	return self.key < other.key
-
-
-# below are the blocking image functions (that support GIF) which require the
-# executor_function wrapper
 
 # Determine color group using strict thresholds
 # Adjust this value to make grouping more/less strict

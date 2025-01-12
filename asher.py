@@ -71,7 +71,7 @@ class AsherCommands(commands.Cog):
 
 		if sentence_count_goal == "max":
 			sentence_count_goal = 500
-		elif type(sentence_count_goal) != int:
+		elif not isinstance(sentence_count_goal, int):
 			raise ValueError(
 				'Requested sentence count is neither a number nor "max"'
 			)

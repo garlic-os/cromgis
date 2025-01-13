@@ -235,6 +235,8 @@ class GarlicCommands(commands.Cog):
 		"""Aggressively scour for an image based on command context"""
 		# 1. command argument
 		if url is not None:
+			if len(ctx.message.mentions) > 0:
+				return ctx.message.mentions[0].display_avatar.url
 			return url
 		# 2. command message attachment
 		url = GarlicCommands.get_image_url_from_message(ctx.message)
@@ -261,14 +263,16 @@ class GarlicCommands(commands.Cog):
 	@commands.command(aliases=["srt", "pxlsrt", "pixelsort"])
 	@commands.cooldown(2, 4, commands.BucketType.user)
 	async def sort(
-		self, ctx: commands.Context, *, url: str | None = None
+		self, ctx: commands.Context, *, image: str | None = None
 	) -> None:
 		"""
 		Does this https://x.com/IceSolst/status/1877746896233533613
+		:param image: image url, or user mention (gets avatar),
+		              or None (see get_image_url)
 		"""
 		try:
 			async with ctx.channel.typing(), asyncio.timeout(45):
-				image_url = await GarlicCommands.get_image_url(ctx, url=url)
+				image_url = await GarlicCommands.get_image_url(ctx, url=image)
 				buffer = await pxl_srt(image_url)
 				filename = cast(str, os.path.basename(urlparse(image_url).path))
 				await ctx.reply(file=discord.File(buffer, filename=filename))

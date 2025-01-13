@@ -95,8 +95,8 @@ def sort_pixels_by_color(img: Image.Image) -> Image.Image:
 			pixels[i * raster.shape[1] + j][4] = color_group.value
 			pixels[i * raster.shape[1] + j][5] = luminosity
 
-	# Sort the pixels
-	indices = np.lexsort((pixels["color_group"], pixels["luminosity"]))
+	# Sort pixels by color group first, then by luminosity
+	indices = np.lexsort((pixels["luminosity"], pixels["color_group"]))
 	sorted_pixels = pixels[indices]
 
 	# Put sorted pixels back into the raster

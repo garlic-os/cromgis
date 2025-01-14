@@ -271,7 +271,11 @@ class GarlicCommands(commands.Cog):
 		              or None (see get_image_url)
 		"""
 		try:
-			async with ctx.channel.typing(), asyncio.timeout(45):
+			async with (
+				ctx.channel.typing(),
+				# dont let it sit processing for longer than 3 minutes
+				asyncio.timeout(3 * 60),
+			):
 				image_url = await GarlicCommands.get_image_url(ctx, url=image)
 				buffer = await pxl_srt(image_url)
 				filename = cast(str, os.path.basename(urlparse(image_url).path))

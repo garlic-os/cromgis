@@ -61,10 +61,10 @@ def image_to_buffer(
 ) -> BytesIO:
 	buffer = BytesIO()
 
-	if durations is None:
+	if not durations:  # equiv. to `durations is None or len(durations) == 0`
 		image_list[0].save(buffer, "WEBP")
 	else:
-		giffed_frames = []
+		giffed_frames: list[Image.Image] = []
 		for frame in image_list:
 			new_frame = gif_frame_transparency(frame)
 			giffed_frames.append(new_frame)

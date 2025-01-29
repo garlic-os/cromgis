@@ -93,7 +93,7 @@ class Cromgis(commands.AutoShardedBot):
 			"asher",
 			"lumien",
 			"invalid",
-			"garfield",
+			"commics",
 			"korbo",
 			"aquaa",
 			"imgur",

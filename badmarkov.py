@@ -30,8 +30,8 @@ class AwfulMarkov:
 		self,
 		table_name: AnyStr,
 		*,
-		corpus: AnyStr = None,
-		state_size: int = None,
+		corpus: AnyStr | None = None,
+		state_size: int | None = None,
 	) -> None:
 		"""
 		Initializes a Markov model.

@@ -4,7 +4,6 @@ import os
 import random
 import zlib
 from io import BytesIO, StringIO
-from typing import cast
 from urllib.parse import urlparse
 
 import discord
@@ -12,10 +11,8 @@ import qrcode
 from discord.ext import commands
 
 from garlic_functions import ProbDist, humanize_text, run_bf, string_to_bf
-from pxl_srt import pxl_srt
-from utils import Crombed, chance, random_string
-
 from main import Cromgis
+from utils import Crombed, chance, random_string
 
 
 REPLY_CHAIN_LENGTH = int(os.environ["REPLY_CHAIN_LENGTH"])

@@ -1,31 +1,31 @@
-[tool.poetry]
+[project]
 name = "cromgis"
-version = "0.1.0"
-description = ""
-authors = ["Nate <14845347+garlic-os@users.noreply.github.com>"]
-license = "MIT"
+version = "0.2.0"
+description = "/r/Ooer Discord Server Plays Python IDE"
 readme = "README.md"
-package-mode = false
+requires-python = ">=3.13"
+dependencies = [
+    "pillow>=10.0.1",
+    "dataset>=1.5.2",
+    "markovify>=0.8.0",
+    "nbfi>=0.1.2",
+    "python-dotenv>=0.14.0",
+    "scipy>=1.10.0",
+    "discord-py>=2.3.2",
+    "jishaku>=2.5.1",
+    "python-dateutil>=2.8.2",
+    "requests>=2.31.0",
+    "asyncio-atexit>=1.0.1",
+    "qrcode>=7.4.2",
+    "pycountry>=24.6.1",
+    "beautifulsoup4>=4.12.3",
+    "lxml>=5.3.0",
+    "matplotlib>=3.1.1",
+    "audioop-lts>=0.2.1",
+    "comics>=0.3.6",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10.0,<3.12"
-Pillow = "^10.0.1"
-dataset = "^1.5.2"
-markovify = "^0.8.0"
-nbfi = "^0.1.2"
-python-dotenv = "^0.14.0"
-scipy = "1.10.0"
-discord-py = "^2.3.2"
-jishaku = "^2.5.1"
-python-dateutil = "^2.8.2"
-requests = "^2.31.0"
-asyncio-atexit = "^1.0.1"
-qrcode = "^7.4.2"
-comics = "^0.3.5"
-pycountry = "^24.6.1"
-beautifulsoup4 = "^4.12.3"
-
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[dependency-groups]
+dev = [
+    "ruff>=0.8.3",
+]

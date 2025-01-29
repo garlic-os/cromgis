@@ -2,119 +2,124 @@
 # We'd post it on /r/Ooer but we'd get banned.
 # https://discord.gg/GhptsGPd
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
-import asyncio_atexit
+import asyncio
+import json
 import logging
 import os
-import json
 import random
-import asyncio
+
 import aiohttp
-from utils import Crombed
-from failure import failure_phrases
+import asyncio_atexit
 import discord
 from discord.ext import commands
 from discord.ext.commands.errors import (
-    CommandError,
-    CommandNotFound,
+	CommandError,
+	CommandNotFound,
 )
+from dotenv import load_dotenv
 
 import badmarkov
+from failure import failure_phrases
+from utils import Crombed
 
+
+load_dotenv()
+
+logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
 class Cromgis(commands.AutoShardedBot):
-    http_session: aiohttp.ClientSession
+	http_session: aiohttp.ClientSession
+	markov: badmarkov.AwfulMarkov
+	logger: logging.Logger
 
-    async def cleanup(self):
-        if hasattr(self, "http_session"):
-            await self.http_session.close()
+	def __init__(self):
+		self.markov = badmarkov.AwfulMarkov("markov_ooer", state_size=2)
+		self.logger = logger
 
-    async def on_message(self, message):
-        if message.author.bot:  # this will catch webhooks as well iirc
-            return
-        if self.user.mentioned_in(message):
-            # await message.channel.send(random.choice(pinged))
-            await message.channel.send(self.markov.generate())
+		self.logger.info("Initializing bot...")
+		intents = discord.Intents.default()
+		intents.members = True
+		intents.message_content = True
 
-        await self.process_commands(message)
+		super().__init__(
+			command_prefix=(
+				os.environ["COMMAND_PREFIX"],
+				os.environ["COMMAND_PREFIX"].capitalize(),
+			),
+			owner_ids=json.loads(os.environ["BOT_OWNERS"]),
+			case_insensitive=True,
+			allowed_mentions=discord.AllowedMentions.none(),
+			activity=discord.Game(name="Forged in steel and fire"),
+			intents=intents,
+		)
 
-    async def on_command_error(
-        self, ctx: commands.Context, exception: CommandError
-    ) -> None:
-        # Ignore Command Not Found errors
-        if type(exception) is CommandNotFound:
-            return
-        embed = Crombed(
-            title=random.choice(failure_phrases),
-            description=str(exception),
-            color_name="red",
-        )
-        await ctx.reply(embed=embed)
-        print(f"\n{exception}\n")
+	async def cleanup(self) -> None:
+		if hasattr(self, "http_session"):
+			await self.http_session.close()
 
-    async def setup_hook(self) -> None:
-        self.http_session = aiohttp.ClientSession(loop=self.loop)
-        asyncio_atexit.register(self.cleanup, loop=self.loop)
-        extensions = [
-            "jishaku",
-            "letters",
-            "delphi",
-            "garlic",
-            "asher",
-            "lumien",
-            "invalid",
-            "commics",
-            "korbo",
-            "aquaa",
-            "imgur",
-            "cheese",
-        ]  # put this... somewhere, later
-        for extension in extensions:
-            try:
-                print(f"Loading extension {extension}...")
-                await bot.load_extension(extension)
-                bot.logger.info(f"Loaded extension {extension}")
-            except Exception as e:
-                bot.logger.error(f"Failed to load extension {extension}; {e}")
+	async def on_message(self, message: discord.Message) -> None:
+		if message.author.bot:  # this will catch webhooks as well iirc
+			return
+		if self.user.mentioned_in(message):
+			await message.channel.send(self.markov.generate())
 
+		await self.process_commands(message)
 
-print("Initializing bot...")
-intents = discord.Intents.default()
-intents.members = True
-intents.message_content = True
+	async def on_command_error(
+		self, ctx: commands.Context, exception: CommandError
+	) -> None:
+		# Ignore Command Not Found errors
+		if type(exception) is CommandNotFound:
+			return
+		embed = Crombed(
+			title=random.choice(failure_phrases),
+			description=str(exception),
+			color_name="red",
+		)
+		await ctx.reply(embed=embed)
+		self.logger.error(f"\n{exception}\n")
 
-bot = Cromgis(
-    command_prefix=(
-        os.environ["COMMAND_PREFIX"],
-        os.environ["COMMAND_PREFIX"].capitalize(),
-    ),
-    owner_ids=json.loads(os.environ["BOT_OWNERS"]),
-    case_insensitive=True,
-    allowed_mentions=discord.AllowedMentions.none(),
-    activity=discord.Game(name="Forged in steel and fire"),
-    intents=intents,
-)
+	async def setup_hook(self) -> None:
+		self.http_session = aiohttp.ClientSession(loop=self.loop)
+		asyncio_atexit.register(self.cleanup, loop=self.loop)
+		extensions = [
+			"jishaku",
+			"i3vie",
+			"delphi",
+			"garlic",
+			"asher",
+			"lumien",
+			"invalid",
+			"garfield",
+			"korbo",
+			"aquaa",
+			"imgur",
+			"cheese",
+		]  # put this... somewhere, later
+		async with asyncio.TaskGroup() as tg:
+			for extension in extensions:
+				try:
+					self.logger.info(f"Loading extension {extension}...")
+					tg.create_task(bot.load_extension(extension))
+				except Exception as e:
+					bot.logger.error(
+						f"Failed to load extension {extension}; {e}"
+					)
 
-bot.logger = logger
-bot.markov = badmarkov.AwfulMarkov("markov_ooer", state_size=2)
-
-
-@bot.event
-async def on_ready():
-    print("ooo online")
-
-
-@bot.command()
-async def ping(ctx):
-    """Respond with the bot's reponse time."""
-    await ctx.send(f"Ping! Took **{round(bot.latency * 1000, 2)}** ms")
+	async def on_ready(self) -> None:
+		self.logger.info("ooo online")
 
 
-print("Logging in...")
-bot.run(os.environ["DISCORD_BOT_TOKEN"])
+if __name__ == "__main__":
+	print("Logging in...")
+	bot = Cromgis()
+
+	@bot.command()
+	async def ping(ctx: commands.Context) -> None:
+		"""Respond with the bot's reponse time."""
+		await ctx.send(f"Ping! Took **{round(bot.latency * 1000, 2)}** ms")
+
+	bot.run(os.environ["DISCORD_BOT_TOKEN"])

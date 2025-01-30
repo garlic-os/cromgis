@@ -2,6 +2,7 @@ import datetime as dt
 
 import comics
 import comics.gocomics
+import dateutil.parser
 from discord.ext import commands
 
 
@@ -33,12 +34,13 @@ ALIASES = {
 }
 
 
-def parse_date_string(
-	date_string: str | None,
-) -> dt.datetime | dt.date | None:
-	if date_string is not None:
-		date_string = date_string.lower()
+def get_comic_api(
+	name: str, date_string: str | None
+) -> comics.gocomics.ComicsAPI:
+	search = comics.search(name)
 	match date_string:
+		case "random" | None:
+			return search.random_date()
 		case "today" | "now":
 			date = dt.datetime.now()
 		case "yesterday":
@@ -49,17 +51,8 @@ def parse_date_string(
 				year=now.year - 1, month=now.month, day=now.day
 			) - dt.timedelta(days=1)
 		case _:
-			return None
-	return date + TIMEDELTA_NORMALIZE_TIMEZONE
-
-
-def get_comic_api(
-	name: str, date_string: str | None
-) -> comics.gocomics.ComicsAPI:
-	search = comics.search(name)
-	date = parse_date_string(date_string)
-	if date is None:
-		return search.random_date()
+			date = dateutil.parser.parse(date_string)
+	date += TIMEDELTA_NORMALIZE_TIMEZONE
 	return search.date(date)
 
 

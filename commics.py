@@ -21,7 +21,7 @@ def timedelta_normalize_timezone() -> dt.timedelta:
 	gocomics_utc_offset = dt.datetime.utcoffset(gocomics_now) or dt.timedelta(
 		hours=0
 	)
-	return system_utc_offset - gocomics_utc_offset
+	return gocomics_utc_offset - system_utc_offset
 
 
 TIMEDELTA_NORMALIZE_TIMEZONE = timedelta_normalize_timezone()
@@ -33,56 +33,56 @@ ALIASES = {
 }
 
 
+def parse_date_string(
+	date_string: str | None,
+) -> dt.datetime | dt.date | None:
+	if date_string is not None:
+		date_string = date_string.lower()
+	match date_string:
+		case "today" | "now":
+			date = dt.datetime.now()
+		case "yesterday":
+			date = dt.datetime.now() - dt.timedelta(days=1)
+		case "tomorrow":
+			now = dt.datetime.now()
+			date = dt.datetime(
+				year=now.year - 1, month=now.month, day=now.day
+			) - dt.timedelta(days=1)
+		case _:
+			return None
+	return date + TIMEDELTA_NORMALIZE_TIMEZONE
+
+
+def get_comic_api(
+	name: str, date_string: str | None
+) -> comics.gocomics.ComicsAPI:
+	search = comics.search(name)
+	date = parse_date_string(date_string)
+	if date is None:
+		return search.random_date()
+	return search.date(date)
+
+
+def parse_aliases(name: str) -> str:
+	name = name.lower()
+	for official_name in ALIASES:
+		if name == official_name or name in ALIASES[official_name]:
+			return official_name
+	try:
+		return comics.directory.search(name)[0]
+	except IndexError:
+		raise commands.BadArgument(f"Comic '{name}' not found")
+
+
 class Comics(commands.Cog):
 	"""Also made by garlicOS®"""
-
-	@staticmethod
-	def parse_date_string(
-		date_string: str | None,
-	) -> dt.datetime | dt.date | None:
-		if date_string is not None:
-			date_string = date_string.lower()
-		match date_string:
-			case "today" | "now":
-				date = dt.datetime.now()
-			case "yesterday":
-				date = dt.datetime.now() - dt.timedelta(days=1)
-			case "tomorrow":
-				now = dt.datetime.now()
-				date = dt.date(
-					year=now.year - 1, month=now.month, day=now.day - 1
-				)
-			case _:
-				return None
-		return date + TIMEDELTA_NORMALIZE_TIMEZONE
-
-	@staticmethod
-	def get_comic_api(
-		name: str, date_string: str | None
-	) -> comics.gocomics.ComicsAPI:
-		search = comics.search(name)
-		date = Comics.parse_date_string(date_string)
-		if date is None:
-			return search.random_date()
-		return search.date(date)
-
-	@staticmethod
-	def parse_aliases(name: str) -> str:
-		name = name.lower()
-		for official_name in ALIASES:
-			if name == official_name or name in ALIASES[official_name]:
-				return official_name
-		try:
-			return comics.directory.search(name)[0]
-		except IndexError:
-			raise commands.BadArgument(f"Comic '{name}' not found")
 
 	@commands.command()
 	async def comic(
 		self, ctx: commands.Context, name: str, date: str | None = None
 	) -> None:
-		name = Comics.parse_aliases(name)
-		api = Comics.get_comic_api(name, date)
+		name = parse_aliases(name)
+		api = get_comic_api(name, date)
 		await ctx.send(api.image_url)
 
 	@commands.command(aliases=ALIASES["garfield"])

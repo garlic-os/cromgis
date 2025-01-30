@@ -73,6 +73,7 @@ class Comics(commands.Cog):
 	async def comic(
 		self, ctx: commands.Context, name: str, date: str | None = None
 	) -> None:
+		"""Fetch a comic by slug from GoComics.com (https://github.com/irahorecka/comics/blob/main/comics/constants/endpoints.json)"""
 		name = parse_aliases(name)
 		api = get_comic_api(name, date)
 		await ctx.send(api.image_url)

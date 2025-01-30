@@ -30,7 +30,7 @@ TIMEDELTA_NORMALIZE_TIMEZONE = timedelta_normalize_timezone()
 ALIASES = {
 	"calvinandhobbes": ["ch", "cnh", "calvin & hobbes", "calvin and hobbes"],
 	"garfield": ["garf"],
-	"healthcliff": ["hc", "heath"],
+	"heathcliff": ["hc", "heath"],
 }
 
 
@@ -58,13 +58,12 @@ def get_comic_api(
 
 def parse_aliases(name: str) -> str:
 	name = name.lower()
+	if name == "healthcliff":
+		raise Exception("Heathcliff does not live healthy")
 	for official_name in ALIASES:
 		if name == official_name or name in ALIASES[official_name]:
 			return official_name
-	try:
-		return comics.directory.search(name)[0]
-	except IndexError:
-		raise commands.BadArgument(f"Comic '{name}' not found")
+	return name
 
 
 class Comics(commands.Cog):

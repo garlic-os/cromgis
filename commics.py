@@ -7,27 +7,7 @@ import dateutil.parser
 from discord.ext import commands
 
 
-def timedelta_normalize_timezone() -> dt.timedelta:
-	"""
-	Normalize datetimes instead of making them timezone-aware because the comics
-	module uses timezone-naive datetimes internally
-	"""
-	system_now = dt.datetime.now().astimezone()
-	# If for some reason your timezone's UTC offset can't be identified, just
-	# default it to 0. Not that big of a deal
-	system_utc_offset = dt.datetime.utcoffset(system_now) or dt.timedelta(
-		hours=0
-	)
-	gocomics_timezone = dt.timezone(offset=dt.timedelta(hours=-5))
-	gocomics_now = dt.datetime.now().astimezone(gocomics_timezone)
-	gocomics_utc_offset = dt.datetime.utcoffset(gocomics_now) or dt.timedelta(
-		hours=0
-	)
-	return gocomics_utc_offset - system_utc_offset
-
-
-TIMEDELTA_NORMALIZE_TIMEZONE = timedelta_normalize_timezone()
-
+GOCOMICS_TIMEZONE = dt.timezone(offset=dt.timedelta(hours=-5))
 ALIASES = {
 	"calvinandhobbes": ["ch", "cnh", "calvin & hobbes", "calvin and hobbes"],
 	"garfield": ["garf"],
@@ -35,10 +15,39 @@ ALIASES = {
 }
 
 
-def get_comic_api(
-	name: str, date_string: str | None
-) -> comics.gocomics.ComicsAPI:
-	search = comics.search(name)
+class CromicsAPI(comics.gocomics.ComicsAPI):
+	"""**Timezone-corrected!** user interface with GoComics."""
+
+	def __init__(
+		self, endpoint: str, title: str, date: dt.datetime | None = None
+	):
+		super().__init__(endpoint, title, date)
+		self._date = self._date.astimezone(GOCOMICS_TIMEZONE)
+
+
+class Cromgisearch(comics.search):
+	"""Timezone-corrected comics API search object"""
+
+	def date(self, date: dt.datetime | str) -> CromicsAPI:
+		if isinstance(date, str):
+			date = dateutil.parser.parse(date)
+		date = date.astimezone(GOCOMICS_TIMEZONE)
+		start_date = dt.datetime.strptime(
+			self.start_date, "%Y-%m-%d"
+		).astimezone(GOCOMICS_TIMEZONE)
+		if date < start_date:
+			raise comics.InvalidDateError(
+				f"Search for dates after {self.start_date}. "
+				f"Your input: {date.strftime('%Y-%m-%d')}"
+			)
+		return CromicsAPI(self.endpoint, self.title, date)
+
+	def random_date(self) -> CromicsAPI:
+		return CromicsAPI(self.endpoint, self.title)
+
+
+def get_comic_api(name: str, date_string: str | None) -> CromicsAPI:
+	search = Cromgisearch(name)
 	match date_string:
 		case "random" | None:
 			return search.random_date()
@@ -52,8 +61,7 @@ def get_comic_api(
 				year=now.year - 1, month=now.month, day=now.day
 			) - dt.timedelta(days=1)
 		case _:
-			date = dateutil.parser.parse(date_string)
-	date += TIMEDELTA_NORMALIZE_TIMEZONE
+			date = date_string
 	return search.date(date)
 
 
@@ -74,7 +82,11 @@ class Comics(commands.Cog):
 
 	@commands.command(aliases=["comics"])
 	async def comic(
-		self, ctx: commands.Context, name: str | None, date: str | None = None
+		self,
+		ctx: commands.Context,
+		name: str | None,
+		*,
+		date: str | None = None,
 	) -> None:
 		"""Fetch a comic by slug from GoComics.com (https://github.com/irahorecka/comics/blob/main/comics/constants/endpoints.json)"""
 		name = parse_aliases(name)
@@ -83,9 +95,9 @@ class Comics(commands.Cog):
 
 	@commands.command(aliases=ALIASES["garfield"])
 	async def garfield(
-		self, ctx: commands.Context, date: str | None = None
+		self, ctx: commands.Context, *, date: str | None = None
 	) -> None:
-		await self.comic(ctx, "garfield", date)
+		await self.comic(ctx, "garfield", date=date)
 
 
 async def setup(bot: commands.Bot) -> None:

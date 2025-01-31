@@ -72,7 +72,7 @@ def parse_aliases(name: str | None) -> str:
 class Comics(commands.Cog):
 	"""Also made by garlicOS®"""
 
-	@commands.command()
+	@commands.command(aliases=["comics"])
 	async def comic(
 		self, ctx: commands.Context, name: str | None, date: str | None = None
 	) -> None:

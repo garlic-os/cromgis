@@ -1,4 +1,5 @@
 import datetime as dt
+import random
 
 import comics
 import comics.gocomics
@@ -56,7 +57,9 @@ def get_comic_api(
 	return search.date(date)
 
 
-def parse_aliases(name: str) -> str:
+def parse_aliases(name: str | None) -> str:
+	if name is None:
+		return random.choice(comics.directory.listall())
 	name = name.lower()
 	if name == "healthcliff":
 		raise Exception("Heathcliff does not live healthy")
@@ -71,7 +74,7 @@ class Comics(commands.Cog):
 
 	@commands.command()
 	async def comic(
-		self, ctx: commands.Context, name: str, date: str | None = None
+		self, ctx: commands.Context, name: str | None, date: str | None = None
 	) -> None:
 		"""Fetch a comic by slug from GoComics.com (https://github.com/irahorecka/comics/blob/main/comics/constants/endpoints.json)"""
 		name = parse_aliases(name)

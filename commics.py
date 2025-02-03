@@ -36,10 +36,7 @@ class Cromgisearch(comics.search):
 	def date(self, date: dt.datetime | str) -> CromicsAPI:
 		if isinstance(date, str):
 			date = dateutil.parser.parse(date)
-		date = date.astimezone(GOCOMICS_TIMEZONE)
-		start_date = dt.datetime.strptime(
-			self.start_date, "%Y-%m-%d"
-		).astimezone(GOCOMICS_TIMEZONE)
+		start_date = dt.datetime.strptime(self.start_date, "%Y-%m-%d")
 		if date < start_date:
 			raise comics.InvalidDateError(
 				f"Search for dates after {self.start_date}. "

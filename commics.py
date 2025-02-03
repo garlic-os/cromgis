@@ -22,7 +22,12 @@ class CromicsAPI(comics.gocomics.ComicsAPI):
 		self, endpoint: str, title: str, date: dt.datetime | None = None
 	):
 		super().__init__(endpoint, title, date)
-		self._date = self._date.astimezone(GOCOMICS_TIMEZONE)
+		self._date = dt.datetime(
+			year=self._date.year,
+			month=self._date.month,
+			day=self._date.day,
+			hour=12,
+		).astimezone(GOCOMICS_TIMEZONE)
 
 
 class Cromgisearch(comics.search):

@@ -71,7 +71,8 @@ class Cromgis(commands.AutoShardedBot):
 			# await message.channel.send(self.markov.generate())
 			# Add random 0-2000ms ping because it's funny
 			await asyncio.sleep(random.random() * 2)
-			await message.reply(self.garlikov.respond(message.content))
+			prompt = message.content.replace(self.user.mention, "")
+			await message.reply(self.garlikov.respond(prompt))
 
 		await self.process_commands(message)
 

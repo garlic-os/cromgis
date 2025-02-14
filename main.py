@@ -69,7 +69,7 @@ class Cromgis(commands.AutoShardedBot):
 			return
 		if self.user.mentioned_in(message):
 			# await message.channel.send(self.markov.generate())
-			await message.channel.send(self.garlikov.respond(message.content))
+			await message.reply(self.garlikov.respond(message.content))
 
 		await self.process_commands(message)
 

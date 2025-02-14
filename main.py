@@ -18,8 +18,10 @@ from discord.ext.commands.errors import (
 )
 from dotenv import load_dotenv
 
-import badmarkov
 from failure import failure_phrases
+
+# import badmarkov
+from garlikov import Garlikov
 from utils import Crombed
 
 
@@ -32,11 +34,13 @@ logger.setLevel(logging.INFO)
 
 class Cromgis(commands.AutoShardedBot):
 	http_session: aiohttp.ClientSession
-	markov: badmarkov.AwfulMarkov
+	# markov: badmarkov.AwfulMarkov
 	logger: logging.Logger
 
 	def __init__(self):
-		self.markov = badmarkov.AwfulMarkov("markov_ooer", state_size=2)
+		# self.markov = badmarkov.AwfulMarkov("markov_ooer", state_size=2)
+		with open("garlikov.json") as f:
+			self.garlikov = Garlikov(parsed_sentences=json.load(f))
 		self.logger = logger
 
 		self.logger.info("Initializing bot...")
@@ -64,7 +68,8 @@ class Cromgis(commands.AutoShardedBot):
 		if message.author.bot:  # this will catch webhooks as well iirc
 			return
 		if self.user.mentioned_in(message):
-			await message.channel.send(self.markov.generate())
+			# await message.channel.send(self.markov.generate())
+			await message.channel.send(self.garlikov.respond(message.content))
 
 		await self.process_commands(message)
 

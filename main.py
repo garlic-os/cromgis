@@ -69,7 +69,7 @@ class Cromgis(commands.AutoShardedBot):
 			return
 		if self.user.mentioned_in(message):
 			# await message.channel.send(self.markov.generate())
-			# Add random 0-2000ms ping because it's funny
+			# Add random 0-2000ms delay because it's funny
 			await asyncio.sleep(random.random() * 2)
 			prompt = message.content.replace(self.user.mention, "")
 			await message.reply(self.garlikov.respond(prompt))

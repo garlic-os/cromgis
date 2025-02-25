@@ -91,9 +91,11 @@ class Comics(commands.Cog):
 		date: str | None = None,
 	) -> None:
 		"""Fetch a comic by slug from GoComics.com (https://github.com/irahorecka/comics/blob/main/comics/constants/endpoints.json)"""
+		say_name = name is None
 		name = parse_aliases(name)
 		api = get_comic_api(name, date)
-		await ctx.send(api.image_url)
+		content = name + "\n" if say_name else ""
+		await ctx.send(content + api.image_url)
 
 	@commands.command(aliases=ALIASES["garfield"])
 	async def garfield(

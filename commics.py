@@ -87,10 +87,9 @@ class Comics(commands.Cog):
 	def __init__(self):
 		for name in comics.directory._registered_comics:
 			if "-" in name:
-				info = comics.directory._registered_comics[name]
-				del comics.directory._registered_comics[name]
-				comics.directory._registered_comics[name.replace("-", "")] = (
-					info
+				new_name = name.replace("-", "")
+				comics.directory._registered_comics[new_name] = (
+					comics.directory._registered_comics.pop(name)
 				)
 
 	@commands.command(aliases=["comics"])

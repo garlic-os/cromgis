@@ -92,6 +92,12 @@ class Comics(commands.Cog):
 	) -> None:
 		"""Fetch a comic by slug from GoComics.com (https://github.com/irahorecka/comics/blob/main/comics/constants/endpoints.json)"""
 		say_name = name is None
+
+		if name == "search":
+			name = date
+			await ctx.reply(str(comics.directory.search(name)))
+			return
+
 		name = parse_aliases(name)
 		api = get_comic_api(name, date)
 		content = name + "\n" if say_name else ""

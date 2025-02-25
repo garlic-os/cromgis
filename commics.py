@@ -50,14 +50,16 @@ class Cromgisearch(comics.search):
 
 def get_comic_api(name: str, date_string: str | None) -> CromicsAPI:
 	search = Cromgisearch(name)
+	if date_string is not None:
+		date_string = date_string.lower()
 	match date_string:
-		case "random" | None:
+		case "random" | "aleatoreo" | None:
 			return search.random_date()
-		case "today" | "now":
+		case "today" | "now" | "ahora" | "ya" | "hoy":
 			date = dt.datetime.now()
-		case "yesterday":
+		case "yesterday" | "ayer":
 			date = dt.datetime.now() - dt.timedelta(days=1)
-		case "tomorrow":
+		case "tomorrow" | "manana" | "mañana":
 			now = dt.datetime.now()
 			date = dt.datetime(
 				year=now.year - 1, month=now.month, day=now.day

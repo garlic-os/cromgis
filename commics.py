@@ -84,6 +84,15 @@ def parse_aliases(name: str | None) -> str:
 class Comics(commands.Cog):
 	"""Also made by garlicOS®"""
 
+	def __init__(self):
+		for name in comics.directory._registered_comics:
+			if "-" in name:
+				info = comics.directory._registered_comics[name]
+				del comics.directory._registered_comics[name]
+				comics.directory._registered_comics[name.replace("-", "")] = (
+					info
+				)
+
 	@commands.command(aliases=["comics"])
 	async def comic(
 		self,

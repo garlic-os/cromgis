@@ -85,7 +85,8 @@ class Comics(commands.Cog):
 	"""Also made by garlicOS®"""
 
 	def __init__(self):
-		for name in comics.directory._registered_comics:
+		comic_names = list(comics.directory._registered_comics.keys())
+		for name in comic_names:
 			if "-" in name:
 				new_name = name.replace("-", "")
 				comics.directory._registered_comics[new_name] = (

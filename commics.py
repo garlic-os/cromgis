@@ -95,7 +95,7 @@ class Comics(commands.Cog):
 		name = parse_aliases(name)
 		api = get_comic_api(name, date)
 		content = name + "\n" if say_name else ""
-		await ctx.send(content + api.image_url)
+		await ctx.reply(content + api.image_url)
 
 	@commands.command(aliases=ALIASES["garfield"])
 	async def garfield(

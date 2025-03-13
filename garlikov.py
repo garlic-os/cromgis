@@ -62,7 +62,14 @@ class Garlikov(markovify.Text):
 		state = self.resolve_wildcards((WILDCARD, last, RESPONSE))
 		if state is not None:
 			return state
-		# Worst case: any state that starts the response
+		# Try permutations
+		state = self.resolve_wildcards((WILDCARD, first, RESPONSE))
+		if state is not None:
+			return state
+		state = self.resolve_wildcards((last, WILDCARD, RESPONSE))
+		if state is not None:
+			return state
+		# Worst case: no matches. Just go random
 		state = self.resolve_wildcards((WILDCARD, WILDCARD, RESPONSE))
 		assert state is not None, (
 			"Corrupt: corpus does not contain the RESPONSE token"

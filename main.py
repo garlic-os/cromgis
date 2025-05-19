@@ -11,6 +11,9 @@ import random
 import aiohttp
 import asyncio_atexit
 import discord
+
+# import badmarkov
+from convmark import ConvMark
 from discord.ext import commands
 from discord.ext.commands.errors import (
 	CommandError,
@@ -19,9 +22,6 @@ from discord.ext.commands.errors import (
 from dotenv import load_dotenv
 
 from failure import failure_phrases
-
-# import badmarkov
-from garlikov import Garlikov
 from utils import Crombed
 
 
@@ -39,8 +39,8 @@ class Cromgis(commands.AutoShardedBot):
 
 	def __init__(self):
 		# self.markov = badmarkov.AwfulMarkov("markov_ooer", state_size=2)
-		with open("garlikov.json") as f:
-			self.garlikov = Garlikov(parsed_sentences=json.load(f))
+		with open("convmark.json") as f:
+			self.garlikov = ConvMark(parsed_sentences=json.load(f))
 		self.logger = logger
 
 		self.logger.info("Initializing bot...")

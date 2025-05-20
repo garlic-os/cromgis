@@ -23,8 +23,12 @@ dependencies = [
     "audioop-lts>=0.2.1",
     "pytz>=2024.2",
     "conversational-markov>=0.1.2",
+    "markovify",
     "comics>=0.7.0",
 ]
 
 [dependency-groups]
 dev = ["ruff>=0.8.3"]
+
+[tool.uv.sources]
+markovify = { git = "https://github.com/garlic-os/markovify" }

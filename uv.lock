@@ -293,6 +293,7 @@ dependencies = [
     { name = "discord-py" },
     { name = "jishaku" },
     { name = "lxml" },
+    { name = "markovify" },
     { name = "matplotlib" },
     { name = "nbfi" },
     { name = "pillow" },
@@ -321,6 +322,7 @@ requires-dist = [
     { name = "discord-py", specifier = ">=2.3.2" },
     { name = "jishaku", specifier = ">=2.5.1" },
     { name = "lxml", specifier = ">=5.3.0" },
+    { name = "markovify", git = "https://github.com/garlic-os/markovify" },
     { name = "matplotlib", specifier = ">=3.1.1" },
     { name = "nbfi", specifier = ">=0.1.2" },
     { name = "pillow", specifier = ">=10.0.1" },
@@ -631,11 +633,10 @@ wheels = [
 [[package]]
 name = "markovify"
 version = "0.9.4"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/garlic-os/markovify#4174e394f289649179b8849b5999fd71a694e815" }
 dependencies = [
     { name = "unidecode" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7a/e2/d0f7df1d6cc9e0b5ab6018d5d302caa1639fe702f492362baac794b6e578/markovify-0.9.4.tar.gz", hash = "sha256:eac0a156ed54bb6bede32ef20131813fbec9db70b515ead57b4d8887a16dfe39", size = 27850 }
 
 [[package]]
 name = "markupsafe"

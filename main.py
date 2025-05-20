@@ -67,7 +67,7 @@ class Cromgis(commands.AutoShardedBot):
 	async def on_message(self, message: discord.Message) -> None:
 		if message.author.bot:  # this will catch webhooks as well iirc
 			return
-		if self.user.mentioned_in(message):
+		if self.user.mentioned_in(message) or random.random() < 0.005:
 			# await message.channel.send(self.markov.generate())
 			# Add random 0-2000ms delay because it's funny
 			await asyncio.sleep(random.random() * 2)

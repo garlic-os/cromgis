@@ -99,8 +99,12 @@ class Comics(commands.Cog):
 		*,
 		date: str | None = None,
 	) -> None:
-		"""Fetch a comic by slug from GoComics.com (https://github.com/irahorecka/comics/blob/main/comics/constants/endpoints.json)"""
+		"""
+		Fetch a comic by slug from GoComics.com
+		https://github.com/irahorecka/comics/blob/main/comics/constants/endpoints.json
+		"""
 		say_name = name is None
+		say_date = date is None
 
 		if name == "search":
 			name = date
@@ -112,7 +116,11 @@ class Comics(commands.Cog):
 		api = await self.bot.loop.run_in_executor(
 			None, get_comic_api, name, date
 		)
-		content = name + "\n" if say_name else ""
+		content = ""
+		if say_name:
+			content += name + "\n"
+		if say_date:
+			content += api.date + "\n"
 		await ctx.reply(content + api.image_url)
 
 	@commands.command(aliases=ALIASES["garfield"])

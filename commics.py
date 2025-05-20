@@ -1,9 +1,9 @@
 import datetime as dt
 import random
+from typing import TypedDict
 
 import comics
-import comics.gocomics
-import dateutil.parser
+from comics._gocomics import ComicsAPI
 from discord.ext import commands
 
 
@@ -15,46 +15,41 @@ ALIASES = {
 }
 
 
-class CromicsAPI(comics.gocomics.ComicsAPI):
-	"""**Timezone-corrected!** user interface with GoComics."""
-
-	def __init__(
-		self, endpoint: str, title: str, date: dt.datetime | None = None
-	):
-		super().__init__(endpoint, title, date)
-		self._date = dt.datetime(
-			year=self._date.year,
-			month=self._date.month,
-			day=self._date.day,
-			hour=12,
-		).astimezone(GOCOMICS_TIMEZONE)
+class RegisteredComic(TypedDict):
+	title: str
+	start_date: str
 
 
-class Cromgisearch(comics.search):
-	"""Timezone-corrected comics API search object"""
+type RegisteredComics = dict[str, RegisteredComic]
 
-	def date(self, date: dt.datetime | str) -> CromicsAPI:
-		if isinstance(date, str):
-			date = dateutil.parser.parse(date)
-		start_date = dt.datetime.strptime(self.start_date, "%Y-%m-%d")
-		if date < start_date:
-			raise comics.InvalidDateError(
-				f"Search for dates after {self.start_date}. "
-				f"Your input: {date.strftime('%Y-%m-%d')}"
+
+class TZAComicsAPI(ComicsAPI):
+	"""**Timezone-aware!** user interface with GoComics."""
+
+	def __init__(self, comics_api: ComicsAPI | comics.search):
+		# bc of comics's screwed up __new__ method
+		assert not isinstance(comics_api, comics.search)
+
+		self.endpoint = comics_api.endpoint
+		self.title = comics_api.title
+		self._date = (
+			dt.datetime(
+				year=comics_api._date.year,
+				month=comics_api._date.month,
+				day=comics_api._date.day,
+				hour=12,
 			)
-		return CromicsAPI(self.endpoint, self.title, date)
+			.astimezone(GOCOMICS_TIMEZONE)
+			.date()
+		)
 
-	def random_date(self) -> CromicsAPI:
-		return CromicsAPI(self.endpoint, self.title)
 
-
-def get_comic_api(name: str, date_string: str | None) -> CromicsAPI:
-	search = Cromgisearch(name)
+def get_comic_api(name: str, date_string: str | None) -> TZAComicsAPI:
 	if date_string is not None:
 		date_string = date_string.lower()
 	match date_string:
 		case "random" | "aleatoreo" | None:
-			return search.random_date()
+			return TZAComicsAPI(comics.search(name, date="random"))
 		case "today" | "now" | "ahora" | "ya" | "hoy":
 			date = dt.datetime.now()
 		case "yesterday" | "ayer":
@@ -66,7 +61,7 @@ def get_comic_api(name: str, date_string: str | None) -> CromicsAPI:
 			) - dt.timedelta(days=1)
 		case _:
 			date = date_string
-	return search.date(date)
+	return TZAComicsAPI(comics.search(name, date))
 
 
 def parse_aliases(name: str | None) -> str:
@@ -84,9 +79,12 @@ def parse_aliases(name: str | None) -> str:
 class Comics(commands.Cog):
 	"""Also made by garlicOS®"""
 
-	def __init__(self):
-		comic_names = list(comics.directory._registered_comics.keys())
-		for name in comic_names:
+	def __init__(self, bot: commands.Bot):
+		self.bot = bot
+		# remove all hypens from the comic names. some of them have them between
+		# words and some of them dont
+		# copying to avoid a "dictionary changed size during iteration"
+		for name in list(comics.directory._registered_comics.keys()):
 			if "-" in name:
 				new_name = name.replace("-", "")
 				comics.directory._registered_comics[new_name] = (
@@ -110,7 +108,10 @@ class Comics(commands.Cog):
 			return
 
 		name = parse_aliases(name)
-		api = get_comic_api(name, date)
+		# Run in executor because this can take like a minute now
+		api = await self.bot.loop.run_in_executor(
+			None, get_comic_api, name, date
+		)
 		content = name + "\n" if say_name else ""
 		await ctx.reply(content + api.image_url)
 
@@ -122,4 +123,4 @@ class Comics(commands.Cog):
 
 
 async def setup(bot: commands.Bot) -> None:
-	await bot.add_cog(Comics())
+	await bot.add_cog(Comics(bot))

@@ -315,7 +315,7 @@ requires-dist = [
     { name = "asyncio-atexit", specifier = ">=1.0.1" },
     { name = "audioop-lts", specifier = ">=0.2.1" },
     { name = "beautifulsoup4", specifier = ">=4.12.3" },
-    { name = "comics", specifier = ">=0.3.6" },
+    { name = "comics", specifier = ">=0.7.0" },
     { name = "conversational-markov", specifier = ">=0.1.2" },
     { name = "dataset", specifier = ">=1.5.2" },
     { name = "discord-py", specifier = ">=2.3.2" },

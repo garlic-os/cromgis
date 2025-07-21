@@ -56,7 +56,6 @@ class Cromgis(commands.AutoShardedBot):
 		)
 
 		self._which = None
-		self.alternate_markovs.start()
 
 	async def setup_hook(self) -> None:
 		self.http_session = aiohttp.ClientSession(loop=self.loop)
@@ -85,6 +84,7 @@ class Cromgis(commands.AutoShardedBot):
 						f"Failed to load extension {extension}; {e}"
 					)
 
+		self.alternate_markovs.start()
 		await self.alternate_markovs()
 
 	async def cleanup(self) -> None:

@@ -13,6 +13,7 @@ ALIASES = {
 	"garfield": ["garf"],
 	"heathcliff": ["hc", "heath"],
 }
+RETRY_COUNT = 20
 
 
 class RegisteredComic(TypedDict):
@@ -112,22 +113,37 @@ class Comics(commands.Cog):
 			return
 
 		name = parse_aliases(name)
-		# Run in executor because this can take like a minute now
-		api = await self.bot.loop.run_in_executor(
-			None, get_comic_api, name, date
-		)
+		api = await self.stubbornly_get_comic_api(name, date)
 		content = ""
 		if say_name:
 			content += name + "\n"
 		if say_date:
 			content += api.date + "\n"
-		await ctx.reply(content + api.image_url)
+		# type: ignore -- package is badly annotated; api.image_url is str
+		await ctx.reply(content + api.image_url)  # type: ignore
 
 	@commands.command(aliases=ALIASES["garfield"])
 	async def garfield(
 		self, ctx: commands.Context, *, date: str | None = None
 	) -> None:
 		await self.comic(ctx, "garfield", date=date)
+
+	async def stubbornly_get_comic_api(
+		self,
+		name: str,
+		date: str | None,
+	) -> TZAComicsAPI:  # type: ignore -- always returns the right type or raises
+		for i in range(RETRY_COUNT):
+			try:
+				# Run in executor because this can take like a minute now
+				api = await self.bot.loop.run_in_executor(
+					None, get_comic_api, name, date
+				)
+				api.image_url  # accessing raises if the search failed
+				return api
+			except comics.exceptions.InvalidDateError:
+				if i == RETRY_COUNT - 1:
+					raise
 
 
 async def setup(bot: commands.Bot) -> None:

@@ -1,4 +1,3 @@
-
 import discord
 from discord.ext import commands
 
@@ -10,7 +9,7 @@ class KorboCommands(commands.Cog):
 		self.bot = bot
 
 	@commands.command()
-	async def shlurp(self, ctx, human: discord.Member = None):
+	async def shlurp(self, ctx, human: discord.Member | None = None):
 		"""shlurps the victim. :yum:"""
 		if human:
 			await ctx.send(
@@ -20,6 +19,11 @@ class KorboCommands(commands.Cog):
 				+ human.mention
 				+ ". :yum:"
 			)
+
+	@commands.command()
+	async def ooo(self, ctx):
+		# Say "ooo 😂"
+		await ctx.channel.send("ooo :joy:")
 
 
 async def setup(bot):

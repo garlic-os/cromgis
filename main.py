@@ -70,7 +70,6 @@ class Cromgis(commands.AutoShardedBot):
 			"invalid",
 			"commics",
 			"korbo",
-			"aquaa",
 			"imgur",
 			"cheese",
 		]  # put this... somewhere, later
